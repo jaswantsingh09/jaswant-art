@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Jaswant — Engineer of Systems, Student of Art</title>
+<meta name="description" content="Jaswant — Senior Software Engineer. LLM systems, MERN, system design. Also: poems, paintings, observations." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2306080b'/%3E%3Ctext x='50' y='68' font-size='52' font-family='monospace' font-weight='bold' text-anchor='middle' fill='%23a3ff6b'%3EJ·%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=general-sans@400,500,600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-theme="machine">
+
+<!-- ██ progress bar + cursor + grain ██ -->
+<div class="scroll-progress" aria-hidden="true"><span id="scrollBar"></span></div>
+<div class="cursor" id="cursor" aria-hidden="true"></div>
+<div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ██ NAV ██ -->
+<header class="nav" id="nav">
+  <a class="nav__logo" href="#top" data-hover>
+    <span class="nav__logo-mark">J·</span><span class="nav__logo-text">jaswant</span>
+  </a>
+  <nav class="nav__links">
+    <a href="#pipeline" data-hover><span class="nav__num">01</span>llm</a>
+    <a href="#stack" data-hover><span class="nav__num">02</span>stack</a>
+    <a href="#blueprint" data-hover><span class="nav__num">03</span>systems</a>
+    <a href="#work" data-hover><span class="nav__num">04</span>work</a>
+    <a href="#research" data-hover><span class="nav__num">05</span>research</a>
+    <a href="#writing" data-hover><span class="nav__num">06</span>blog</a>
+    <a href="#studio" class="nav__art" data-hover><span class="nav__num">07</span>the studio</a>
+  </nav>
+  <a class="nav__cta" href="#contact" data-hover>open a channel</a>
+  <button class="nav__burger" id="burger" aria-label="Open menu" aria-expanded="false">
+    <span></span><span></span>
+  </button>
+</header>
+
+<!-- ██ mobile menu ██ -->
+<div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+  <nav class="mobile-menu__links">
+    <a href="#pipeline"><span class="mono">01</span>llm</a>
+    <a href="#stack"><span class="mono">02</span>stack</a>
+    <a href="#blueprint"><span class="mono">03</span>systems</a>
+    <a href="#work"><span class="mono">04</span>work</a>
+    <a href="#research"><span class="mono">05</span>research</a>
+    <a href="#writing"><span class="mono">06</span>blog</a>
+    <a href="#studio" class="mobile-menu__art"><span class="mono">07</span>the studio</a>
+    <a href="#contact"><span class="mono">08</span>contact</a>
+  </nav>
+</div>
+
+<!-- ██ reader overlay (blog + research full text) ██ -->
+<div class="reader" id="reader" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="reader__scrim" id="readerScrim"></div>
+  <article class="reader__panel">
+    <button class="reader__close mono" id="readerClose" aria-label="Close reader">esc / close ✕</button>
+    <div class="reader__meta mono" id="readerMeta"></div>
+    <div class="reader__body" id="readerBody"></div>
+  </article>
+</div>
+
+<main id="top">
+
+  <!-- ████████████████ HERO ████████████████ -->
+  <section class="hero" id="hero">
+    <canvas id="neuralCanvas" aria-hidden="true"></canvas>
+    <div class="hero__inner">
+      <p class="hero__boot mono" id="bootline" aria-label="system boot line">
+        <span class="blink">▮</span>
+      </p>
+      <h1 class="hero__title">
+        <span class="hero__row"><span class="hero__word" data-reveal>JASWANT</span></span>
+        <span class="hero__row hero__row--outline"><span class="hero__word" data-reveal>BUILDS</span></span>
+        <span class="hero__row"><span class="hero__word" data-reveal>THINKING</span>&nbsp;<span class="hero__word hero__word--italic" data-reveal>machines</span></span>
+      </h1>
+      <div class="hero__sub">
+        <p class="hero__desc" data-reveal>
+          Senior software engineer shipping <em>LLM systems</em>, MERN products and
+          architectures that survive traffic — with a sketchbook never far from the keyboard.
+        </p>
+        <div class="hero__meta mono" data-reveal>
+          <span>⌁ llm · rag · agents</span>
+          <span>⌁ mongo · express · react · node</span>
+          <span>⌁ systems that scale</span>
+          <span class="hero__meta-art">✦ poems · paintings · observations</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero__scrollcue mono" aria-hidden="true">
+      <span>scroll to run inference</span>
+      <span class="hero__scrollcue-line"></span>
+    </div>
+  </section>
+
+  <!-- ████ marquee ████ -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      <span>ATTENTION IS ALL YOU NEED ✦ EVENTUAL CONSISTENCY ✦ TOKENS PER SECOND ✦ CHIAROSCURO ✦ HORIZONTAL SCALE ✦ NEGATIVE SPACE ✦ RETRIEVAL AUGMENTED ✦ BRUSH ON CANVAS ✦ IDEMPOTENCY ✦ GOLDEN RATIO ✦&nbsp;</span>
+      <span>ATTENTION IS ALL YOU NEED ✦ EVENTUAL CONSISTENCY ✦ TOKENS PER SECOND ✦ CHIAROSCURO ✦ HORIZONTAL SCALE ✦ NEGATIVE SPACE ✦ RETRIEVAL AUGMENTED ✦ BRUSH ON CANVAS ✦ IDEMPOTENCY ✦ GOLDEN RATIO ✦&nbsp;</span>
+    </div>
+  </div>
+
+  <!-- ████████████████ 01 · LLM PIPELINE (sticky scroll scene) ████████████████ -->
+  <section class="pipeline" id="pipeline">
+    <div class="pipeline__sticky-wrap" id="pipelineWrap">
+      <div class="pipeline__sticky">
+        <div class="section-head">
+          <span class="section-head__num mono">01</span>
+          <h2 class="section-head__title">Inference,<br/><em>frame by frame</em></h2>
+          <p class="section-head__note mono">scroll drives the forward pass ↓</p>
+        </div>
+        <canvas id="pipelineCanvas" aria-label="Animated LLM inference pipeline"></canvas>
+        <div class="pipeline__stages mono" aria-hidden="true">
+          <span class="pipeline__stage" data-stage="0">tokenize</span>
+          <span class="pipeline__stage" data-stage="1">embed</span>
+          <span class="pipeline__stage" data-stage="2">attend</span>
+          <span class="pipeline__stage" data-stage="3">generate</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ████████████████ 02 · MERN STACK ████████████████ -->
+  <section class="stack" id="stack">
+    <div class="section-head section-head--pad">
+      <span class="section-head__num mono">02</span>
+      <h2 class="section-head__title">One request,<br/><em>end to end</em></h2>
+      <p class="section-head__note mono">live packets · the MERN lifecycle</p>
+    </div>
+
+    <div class="stack__diagram" id="stackDiagram">
+      <svg id="mernSvg" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMid meet" aria-label="MERN architecture with animated request packets">
+        <!-- wires -->
+        <path id="wire1" class="wire" d="M 235 210 C 320 210 330 210 415 210" />
+        <path id="wire2" class="wire" d="M 545 210 C 630 210 640 210 725 210" />
+        <path id="wire3" class="wire" d="M 855 210 C 940 210 950 210 1035 210" />
+        <!-- nodes -->
+        <g class="node" data-node>
+          <rect x="85" y="140" width="150" height="140" rx="14"/>
+          <text class="node__icon" x="160" y="196">⌘</text>
+          <text class="node__label" x="160" y="232">REACT</text>
+          <text class="node__sub" x="160" y="254">ui · state · hooks</text>
+        </g>
+        <g class="node" data-node>
+          <rect x="415" y="140" width="130" height="140" rx="14"/>
+          <text class="node__icon" x="480" y="196">⇄</text>
+          <text class="node__label" x="480" y="232">EXPRESS</text>
+          <text class="node__sub" x="480" y="254">routes · middleware</text>
+        </g>
+        <g class="node" data-node>
+          <rect x="725" y="140" width="130" height="140" rx="14"/>
+          <text class="node__icon" x="790" y="196">⬢</text>
+          <text class="node__label" x="790" y="232">NODE</text>
+          <text class="node__sub" x="790" y="254">event loop · async</text>
+        </g>
+        <g class="node node--db" data-node>
+          <rect x="1035" y="140" width="130" height="140" rx="14"/>
+          <text class="node__icon" x="1100" y="196">☰</text>
+          <text class="node__label" x="1100" y="232">MONGO</text>
+          <text class="node__sub" x="1100" y="254">documents · indexes</text>
+        </g>
+        <!-- packets injected by JS -->
+        <g id="packets"></g>
+        <!-- request labels -->
+        <text class="wirelabel" x="325" y="176">GET /api/ideas</text>
+        <text class="wirelabel" x="635" y="176">controller()</text>
+        <text class="wirelabel" x="945" y="176">.find(query)</text>
+        <text class="wirelabel wirelabel--back" x="325" y="262">200 · json</text>
+        <text class="wirelabel wirelabel--back" x="635" y="262">res.send()</text>
+        <text class="wirelabel wirelabel--back" x="945" y="262">cursor</text>
+      </svg>
+    </div>
+
+    <div class="stack__skills">
+      <div class="skillcol" data-reveal>
+        <h3 class="mono">// language models</h3>
+        <ul>
+          <li>RAG pipelines &amp; vector search</li>
+          <li>agentic workflows &amp; tool use</li>
+          <li>prompt architecture &amp; evals</li>
+          <li>fine-tuning &amp; inference optimization</li>
+        </ul>
+      </div>
+      <div class="skillcol" data-reveal>
+        <h3 class="mono">// product engineering</h3>
+        <ul>
+          <li>React — state, performance, motion</li>
+          <li>Node/Express — APIs that behave</li>
+          <li>MongoDB — schemas that scale</li>
+          <li>TypeScript end to end</li>
+        </ul>
+      </div>
+      <div class="skillcol" data-reveal>
+        <h3 class="mono">// systems</h3>
+        <ul>
+          <li>caching, queues, sharding</li>
+          <li>observability &amp; graceful failure</li>
+          <li>API design &amp; versioning</li>
+          <li>back-of-envelope math, always</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ████████████████ 03 · SYSTEM BLUEPRINT (self-drawing) ████████████████ -->
+  <section class="blueprint" id="blueprint">
+    <div class="blueprint__sticky-wrap" id="blueprintWrap">
+      <div class="blueprint__sticky">
+        <div class="section-head">
+          <span class="section-head__num mono">03</span>
+          <h2 class="section-head__title">The blueprint<br/><em>draws itself</em></h2>
+          <p class="section-head__note mono">keep scrolling · ink follows you ↓</p>
+        </div>
+        <svg id="bpSvg" viewBox="0 0 1200 640" preserveAspectRatio="xMidYMid meet" aria-label="Self-drawing distributed system architecture diagram">
+          <!-- grid dots drawn via CSS bg on container -->
+          <!-- edges -->
+          <path class="bp-edge" d="M 150 320 L 300 320" />
+          <path class="bp-edge" d="M 420 320 L 520 200" />
+          <path class="bp-edge" d="M 420 320 L 520 440" />
+          <path class="bp-edge" d="M 640 200 L 760 200" />
+          <path class="bp-edge" d="M 640 440 L 760 440" />
+          <path class="bp-edge" d="M 880 200 L 980 300" />
+          <path class="bp-edge" d="M 880 440 L 980 340" />
+          <path class="bp-edge bp-edge--dash" d="M 700 260 L 700 380" />
+          <path class="bp-edge bp-edge--dash" d="M 820 140 C 900 80 1000 100 1040 180" />
+          <!-- nodes: each g gets stroke-drawn rect + label -->
+          <g class="bp-node"><circle cx="110" cy="320" r="42"/><text x="110" y="315">clients</text><text class="bp-sub" x="110" y="336">web · mobile</text></g>
+          <g class="bp-node"><rect x="300" y="270" width="120" height="100" rx="10"/><text x="360" y="315">gateway</text><text class="bp-sub" x="360" y="336">lb · tls · rate-limit</text></g>
+          <g class="bp-node"><rect x="520" y="150" width="120" height="100" rx="10"/><text x="580" y="195">api svc</text><text class="bp-sub" x="580" y="216">stateless × N</text></g>
+          <g class="bp-node"><rect x="520" y="390" width="120" height="100" rx="10"/><text x="580" y="435">llm svc</text><text class="bp-sub" x="580" y="456">gpu pool · batching</text></g>
+          <g class="bp-node"><rect x="760" y="150" width="120" height="100" rx="10"/><text x="820" y="195">redis</text><text class="bp-sub" x="820" y="216">cache · sessions</text></g>
+          <g class="bp-node"><rect x="760" y="390" width="120" height="100" rx="10"/><text x="820" y="435">vector db</text><text class="bp-sub" x="820" y="456">embeddings · ANN</text></g>
+          <g class="bp-node"><rect x="980" y="270" width="130" height="100" rx="10"/><text x="1045" y="315">mongo rs</text><text class="bp-sub" x="1045" y="336">primary + replicas</text></g>
+          <g class="bp-node"><rect x="1040" y="130" width="120" height="90" rx="45"/><text x="1100" y="170">kafka</text><text class="bp-sub" x="1100" y="191">events · dlq</text></g>
+          <!-- annotations -->
+          <g class="bp-note"><text x="360" y="250">↳ sticky? no. stateless.</text></g>
+          <g class="bp-note"><text x="580" y="130">↳ p99 &lt; 120ms</text></g>
+          <g class="bp-note"><text x="580" y="530">↳ stream tokens, don't wait</text></g>
+          <g class="bp-note"><text x="1045" y="400">↳ shard when it hurts</text></g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ████████████████ 04 · WORK ████████████████ -->
+  <section class="work" id="work">
+    <div class="section-head section-head--pad">
+      <span class="section-head__num mono">04</span>
+      <h2 class="section-head__title">Selected<br/><em>builds</em></h2>
+      <p class="section-head__note mono">swap these for your real projects</p>
+    </div>
+    <!-- ✏️ EDIT HERE: replace the placeholder projects below with real ones -->
+    <div class="work__grid">
+      <article class="card" data-reveal data-tilt>
+        <span class="card__num mono">P·01</span>
+        <h3>Conversational RAG Platform</h3>
+        <p>Retrieval-augmented assistant over messy enterprise docs — hybrid search, reranking, streaming UI. Hallucinations put on a leash.</p>
+        <div class="card__tags mono"><span>llm</span><span>vector-db</span><span>react</span></div>
+      </article>
+      <article class="card" data-reveal data-tilt>
+        <span class="card__num mono">P·02</span>
+        <h3>Realtime Collab Engine</h3>
+        <p>MERN + websockets, CRDT-flavored syncing, presence, offline queueing. Feels instant on bad hotel wifi.</p>
+        <div class="card__tags mono"><span>node</span><span>websocket</span><span>mongo</span></div>
+      </article>
+      <article class="card" data-reveal data-tilt>
+        <span class="card__num mono">P·03</span>
+        <h3>Agentic Ops Copilot</h3>
+        <p>Tool-using LLM agents that triage incidents, draft runbooks, and know when to page a human instead of guessing.</p>
+        <div class="card__tags mono"><span>agents</span><span>tooling</span><span>evals</span></div>
+      </article>
+      <article class="card" data-reveal data-tilt>
+        <span class="card__num mono">P·04</span>
+        <h3>Design-System-as-Code</h3>
+        <p>Token pipeline + component library powering multiple products — where the engineer and the artist finally agree.</p>
+        <div class="card__tags mono"><span>react</span><span>tokens</span><span>a11y</span></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ████████████████ 05 · RESEARCH ████████████████ -->
+  <section class="research" id="research">
+    <div class="section-head section-head--pad">
+      <span class="section-head__num mono">05</span>
+      <h2 class="section-head__title">Research<br/><em>&amp; deep dives</em></h2>
+      <p class="section-head__note mono">experiments · write-ups · edit in js/content.js</p>
+    </div>
+    <div class="research__grid" id="researchGrid"><!-- rendered from content.js --></div>
+  </section>
+
+  <!-- ████████████████ 06 · BLOG ████████████████ -->
+  <section class="writing" id="writing">
+    <div class="section-head section-head--pad">
+      <span class="section-head__num mono">06</span>
+      <h2 class="section-head__title">The<br/><em>blog</em></h2>
+      <p class="section-head__note mono">essays &amp; write-ups · edit in js/content.js</p>
+    </div>
+    <div class="writing__list" id="blogList"><!-- rendered from content.js --></div>
+  </section>
+
+  <!-- ████████████████ 07 · THE STUDIO (art — the 20%) ████████████████ -->
+  <section class="studio" id="studio">
+    <div class="studio__tear" aria-hidden="true">
+      <svg viewBox="0 0 1440 80" preserveAspectRatio="none"><path d="M0,80 L0,42 C120,60 180,18 320,36 C460,54 540,10 700,30 C860,50 940,14 1100,34 C1260,54 1360,22 1440,40 L1440,80 Z"/></svg>
+    </div>
+
+    <div class="studio__inner">
+      <header class="studio__head">
+        <p class="studio__kicker">chapter two — after the terminal is closed</p>
+        <h2 class="studio__title">The <em>Studio</em></h2>
+        <p class="studio__lede">
+          Twenty percent of the disk, half of the soul. Poems written between deploys,
+          paintings that took longer than any migration, and small observations collected
+          like well-named variables.
+        </p>
+      </header>
+
+      <!-- ── poems ─────────────────────────────────────────────── -->
+      <div class="studio__section">
+        <h3 class="studio__label">⟡ Poems</h3>
+        <!-- ✏️ EDIT HERE: add your poems as more <article class="poem"> blocks -->
+        <div class="poems">
+          <article class="poem" data-reveal>
+            <h4>Garbage Collection</h4>
+            <p>I keep old griefs in memory<br/>
+            long after their references die —<br/>
+            some part of me still marks them <em>reachable</em>,<br/>
+            afraid of the silence they'd free.</p>
+            <span class="poem__meta">placeholder — replace with your own</span>
+          </article>
+          <article class="poem" data-reveal>
+            <h4>Attention</h4>
+            <p>The model weighs each word against the rest;<br/>
+            so do we, at midnight, replaying a sentence<br/>
+            someone said in passing — softmax over memory,<br/>
+            one moment scored above a thousand days.</p>
+            <span class="poem__meta">placeholder — replace with your own</span>
+          </article>
+          <article class="poem" data-reveal>
+            <h4>Monsoon, Debugged</h4>
+            <p>The rain arrives like a hotfix at 2 a.m. —<br/>
+            unplanned, loud, and somehow<br/>
+            exactly what the parched system needed.</p>
+            <span class="poem__meta">placeholder — replace with your own</span>
+          </article>
+        </div>
+      </div>
+
+      <!-- ── paintings ─────────────────────────────────────────── -->
+      <div class="studio__section">
+        <h3 class="studio__label">⟡ Paintings</h3>
+        <!-- ✏️ EDIT HERE: replace each .frame's inner <div class="frame__ph"> with
+             <img src="art/your-painting.jpg" alt="Title of painting" /> -->
+        <div class="gallery">
+          <figure class="frame" data-reveal>
+            <div class="frame__art"><div class="frame__ph frame__ph--1"></div></div>
+            <figcaption>Untitled №1 <span>· add your painting here</span></figcaption>
+          </figure>
+          <figure class="frame frame--tall" data-reveal>
+            <div class="frame__art"><div class="frame__ph frame__ph--2"></div></div>
+            <figcaption>Untitled №2 <span>· acrylic? oil? you tell me</span></figcaption>
+          </figure>
+          <figure class="frame" data-reveal>
+            <div class="frame__art"><div class="frame__ph frame__ph--3"></div></div>
+            <figcaption>Untitled №3 <span>· drop an image in /art</span></figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <!-- ── observations ──────────────────────────────────────── -->
+      <div class="studio__section">
+        <h3 class="studio__label">⟡ Observations</h3>
+        <!-- ✏️ EDIT HERE: add short notes as more .obs blocks -->
+        <div class="obs-list">
+          <blockquote class="obs" data-reveal>Good code and good brushwork share a rule: every stroke should look inevitable.</blockquote>
+          <blockquote class="obs" data-reveal>A system diagram is just a still life of pressure.</blockquote>
+          <blockquote class="obs" data-reveal>The best abstractions, like the best poems, are judged by what they leave out.</blockquote>
+        </div>
+      </div>
+
+      <!-- ── logbook (daily life) ─────────────────────────────── -->
+      <div class="studio__section">
+        <h3 class="studio__label">⟡ The Logbook — ordinary days</h3>
+        <p class="logbook__hint">bike rides, rain, half-finished canvases — add entries in <span class="mono">js/content.js</span></p>
+        <div class="logbook" id="logbook"><!-- rendered from content.js --></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ████████████████ CONTACT ████████████████ -->
+  <footer class="contact" id="contact">
+    <canvas id="footerCanvas" aria-hidden="true"></canvas>
+    <div class="contact__inner">
+      <p class="mono contact__kicker">// stdout — final message</p>
+      <h2 class="contact__title">Let's build something<br/>that <em>thinks</em>.</h2>
+      <div class="contact__links">
+        <!-- ✏️ EDIT HERE: real links -->
+        <a href="mailto:hello@example.com" data-hover>email ↗</a>
+        <a href="#" data-hover>github ↗</a>
+        <a href="#" data-hover>linkedin ↗</a>
+        <a href="#" data-hover>x / twitter ↗</a>
+      </div>
+      <p class="contact__foot mono">© <span id="year"></span> jaswant · engineered by day, painted by night · exit code 0</p>
+    </div>
+  </footer>
+
+</main>
+
+<script src="js/content.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
