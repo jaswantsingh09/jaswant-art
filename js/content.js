@@ -148,25 +148,30 @@ The demo is easy. The boring version — retries, fallbacks, evals in CI, cost c
 
   /* ────────────────────────────────────────────────
      JOURNAL — daily life, small and unpolished
+     Entries with `draft: true` are not shown; with none left, the Journal block hides itself.
      (rendered inside The Studio; keep entries short)
   ──────────────────────────────────────────────── */
   journal: [
     {
+      draft: true, // hidden from the site — delete this line to publish
       date: "2026-07-12",
       icon: "⛰",
       text: "Placeholder — 60km bike ride before the city woke up. Legs gone, head clear. Best architecture reviews happen on the saddle.",
     },
     {
+      draft: true, // hidden from the site — delete this line to publish
       date: "2026-06-28",
       icon: "☔",
       text: "Placeholder — first monsoon rain. Sat in the balcony with chai and let a deploy window pass. No regrets.",
     },
     {
+      draft: true, // hidden from the site — delete this line to publish
       date: "2026-06-09",
       icon: "🎨",
       text: "Placeholder — started an oil study of the street corner. Ochre is impossible. Third attempt this month.",
     },
     {
+      draft: true, // hidden from the site — delete this line to publish
       date: "2026-05-30",
       icon: "⌨",
       text: "Placeholder — rewrote a service in an evening that took a month to write the first time. Deleting code remains the best feeling in software.",

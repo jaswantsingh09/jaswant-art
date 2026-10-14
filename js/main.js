@@ -101,7 +101,9 @@
   });
 
   const journalEl = $("#journal");
-  C.journal.forEach((j) => {
+  const journal = C.journal.filter((j) => !j.draft);
+  journalEl.closest(".journal").hidden = journal.length === 0;
+  journal.forEach((j) => {
     const li = document.createElement("li");
     li.setAttribute("data-reveal", "");
     li.innerHTML = `<time datetime="${esc(j.date)}">${esc(j.date)}</time><span>${esc(j.text)}</span>`;
