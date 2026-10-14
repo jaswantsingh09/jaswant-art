@@ -79,4 +79,15 @@ This is a static site with no build step, so any static host works.
    - `CNAME` record for `www` → `jaswantsingh09.github.io`
 3. Once the certificate is issued, tick **Enforce HTTPS**.
 
+**DNS on GoDaddy**
+1. GoDaddy → *My Products* → *Domains* → `jaswant.art` → **DNS** → *DNS Records*.
+2. Delete the default `A @ → Parked` record. Under the *Forwarding* tab, remove any forwarding.
+3. Add four `A` records, all with **Name** `@` and the default TTL:
+   `185.199.108.153` · `185.199.109.153` · `185.199.110.153` · `185.199.111.153`
+4. Edit the existing `CNAME www` record (it points to `@` by default) so it points to `jaswantsingh09.github.io`.
+5. Optional, for IPv6: add four `AAAA` records for `@`:
+   `2606:50c0:8000::153` · `2606:50c0:8001::153` · `2606:50c0:8002::153` · `2606:50c0:8003::153`
+6. Recommended: verify the domain in GitHub → *Settings* (your account) → *Pages* → *Add a domain*. GitHub gives you a `TXT` record to add at GoDaddy, and it stops anyone else from claiming the domain.
+7. Check propagation with `dig jaswant.art +short`. It should list the four `185.199.x.153` addresses. That usually takes minutes, but can take up to 48 hours.
+
 **Netlify / Vercel / Cloudflare Pages**: import the repo, leave the build command empty and set the output directory to `/`. Then add `jaswant.art` as a custom domain and follow their DNS instructions. You can delete `CNAME` there.
