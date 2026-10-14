@@ -83,10 +83,12 @@ A multi-agent system built on LangChain, designed to run serverless.
 
   /* ────────────────────────────────────────────────
      BLOG — essays & write-ups
+     Posts with `draft: true` are not shown on the site.
   ──────────────────────────────────────────────── */
   blog: [
     {
       id: "B-01",
+      draft: true, // hidden from the site — delete this line to publish
       title: "What Painting Taught Me About System Design",
       date: "2026-05-14",
       tags: ["essay", "art", "systems"],
@@ -107,6 +109,7 @@ Nobody sees the underpainting, and nobody praises your migration tooling. Both d
     },
     {
       id: "B-02",
+      draft: true, // hidden from the site — delete this line to publish
       title: "The Event Loop, Explained to a Poet",
       date: "2026-03-02",
       tags: ["node", "writing"],
@@ -126,6 +129,7 @@ That's the whole trick. Everything else is queue etiquette.`,
     },
     {
       id: "B-03",
+      draft: true, // hidden from the site — delete this line to publish
       title: "Notes on Making LLMs Boring (Reliable)",
       date: "2025-11-20",
       tags: ["llm", "engineering"],
