@@ -1,720 +1,362 @@
 /* ═══════════════════════════════════════════════════════════
-   JASWANT — site engine
-   hero neural field · scroll-driven LLM pipeline · MERN packets
-   self-drawing blueprint · cursor · reveals
+   jaswant.art — behaviour
+   word reveals · plotter line field · work previews
+   studio night shift · writing reader
    ═══════════════════════════════════════════════════════════ */
 (() => {
   "use strict";
 
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const finePointer = matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const lerp = (a, b, t) => a + (b - a) * t;
-  const easeOut = (t) => 1 - Math.pow(1 - t, 3);
-  const easeInOut = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-  // progress of p within [a,b] clamped 0..1
-  const seg = (p, a, b) => clamp((p - a) / (b - a), 0, 1);
+  const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
-  // accent colours are mutable — js/play.js can retheme the site live
-  let PHOSPHOR = "#a3ff6b";
-  let SIGNAL = "#5bd7ff";
-  const rgba = (hex, a) => {
-    const n = parseInt(hex.slice(1), 16);
-    return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`;
-  };
-  const AMBER = "#ffc857";
-  const DIM = "#8fa3a0";
-
-  function fitCanvas(canvas) {
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const r = canvas.getBoundingClientRect();
-    if (r.width === 0 || r.height === 0) return null;
-    canvas.width = Math.round(r.width * dpr);
-    canvas.height = Math.round(r.height * dpr);
+  function fitCanvas(canvas, w, h) {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
     const ctx = canvas.getContext("2d");
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    return { ctx, w: r.width, h: r.height };
+    return ctx;
   }
 
-  /* ────────────────────────────────────────────────
-     year + nav + scroll progress
-  ──────────────────────────────────────────────── */
-  document.getElementById("year").textContent = new Date().getFullYear();
-
-  const nav = document.getElementById("nav");
-  const scrollBar = document.getElementById("scrollBar");
-  function onScrollChrome() {
-    nav.classList.toggle("is-scrolled", window.scrollY > 40);
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    scrollBar.style.width = (max > 0 ? (window.scrollY / max) * 100 : 0) + "%";
+  /* ───────────── year + clock ───────────── */
+  $("#year").textContent = new Date().getFullYear();
+  const clock = $("#clock");
+  function tick() {
+    try {
+      clock.textContent = new Date().toLocaleTimeString("en-GB", {
+        timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit",
+      }) + " IST";
+    } catch (_) { clock.textContent = ""; }
   }
-  window.addEventListener("scroll", onScrollChrome, { passive: true });
-  onScrollChrome();
+  tick();
+  setInterval(tick, 30000);
 
-  /* ────────────────────────────────────────────────
-     custom cursor
-  ──────────────────────────────────────────────── */
-  const cursor = document.getElementById("cursor");
-  const ring = document.getElementById("cursorRing");
-  let cx = -100, cy = -100, rx = -100, ry = -100;
-  window.addEventListener("pointermove", (e) => { cx = e.clientX; cy = e.clientY; }, { passive: true });
-  // delegated, so elements rendered later (posts, papers, terminal) also get the hover ring
-  const HOVERABLE = "a, button, [data-hover]";
-  document.addEventListener("pointerover", (e) => {
-    ring.classList.toggle("is-hover", !!(e.target.closest && e.target.closest(HOVERABLE)));
-  });
-  (function cursorLoop() {
-    rx = lerp(rx, cx, 0.16);
-    ry = lerp(ry, cy, 0.16);
-    cursor.style.transform = `translate(${cx - 4}px, ${cy - 4}px)`;
-    ring.style.transform = `translate(${rx - ring.offsetWidth / 2}px, ${ry - ring.offsetHeight / 2}px)`;
-    requestAnimationFrame(cursorLoop);
-  })();
+  /* ───────────── split headings into masked words ───────────── */
+  function split(el) {
+    let i = 0;
+    const walk = (node) => {
+      [...node.childNodes].forEach((child) => {
+        if (child.nodeType === 3) {
+          const frag = document.createDocumentFragment();
+          child.nodeValue.split(/(\s+)/).forEach((part) => {
+            if (!part) return;
+            if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(" ")); return; }
+            const w = document.createElement("span");
+            w.className = "w";
+            const inner = document.createElement("span");
+            inner.textContent = part;
+            inner.style.transitionDelay = (i++ * 0.035).toFixed(3) + "s";
+            w.appendChild(inner);
+            frag.appendChild(w);
+          });
+          child.replaceWith(frag);
+        } else if (child.nodeType === 1) {
+          walk(child);
+        }
+      });
+    };
+    walk(el);
+    el.classList.add("is-split");
+  }
+  $$("[data-split]").forEach(split);
 
-  /* ────────────────────────────────────────────────
-     boot line typewriter
-  ──────────────────────────────────────────────── */
-  const bootEl = document.getElementById("bootline");
-  const bootLines = [
-    "$ whoami — senior software engineer · llm systems",
-    "$ loading weights…  ▓▓▓▓▓▓▓▓▓▓ 100%",
-    "$ side process detected: art_enthusiast.service — keeping alive",
-    "$ ready. temperature 0.7 — creative but grounded",
+  /* ───────────── reveal on scroll (staggered per batch) ───────────── */
+  const io = new IntersectionObserver((entries) => {
+    entries.filter((e) => e.isIntersecting).forEach((e, n) => {
+      e.target.style.transitionDelay = e.target.classList.contains("is-split") ? "" : n * 0.08 + "s";
+      e.target.classList.add("is-in");
+      io.unobserve(e.target);
+    });
+  }, { threshold: 0.15, rootMargin: "0px 0px -6% 0px" });
+  const observe = () => $$("[data-reveal]:not(.is-in), .is-split:not(.is-in)").forEach((el) => io.observe(el));
+
+  /* ───────────── content: writing + journal ───────────── */
+  const C = window.SITE_CONTENT || { research: [], blog: [], journal: [] };
+  const entriesEl = $("#entries");
+  const items = [
+    ...C.blog.map((b) => ({ kind: "Essay", title: b.title, meta: `${b.date} · ${b.minutes} min`, body: b.body, readerMeta: `Essay — ${b.date}` })),
+    ...C.research.map((r) => ({ kind: "Research", title: r.title, meta: `${r.date} · ${r.status}`, body: r.body, readerMeta: `Research ${r.id} — ${r.date} — ${r.status}` })),
   ];
-  if (!reduceMotion) {
-    let li = 0, ch = 0;
-    (function typeBoot() {
-      if (li >= bootLines.length) { li = 0; }
-      const line = bootLines[li];
-      ch++;
-      bootEl.innerHTML = line.slice(0, ch).replace(/</g, "&lt;") + '<span class="blink">▮</span>';
-      if (ch < line.length) {
-        setTimeout(typeBoot, 26 + Math.random() * 40);
-      } else {
-        li++; ch = 0;
-        setTimeout(typeBoot, 2100);
-      }
-    })();
-  } else {
-    bootEl.textContent = bootLines[0];
-  }
-
-  /* ────────────────────────────────────────────────
-     reveal on scroll
-  ──────────────────────────────────────────────── */
-  const revealIO = new IntersectionObserver((entries) => {
-    entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add("is-in"); revealIO.unobserve(en.target); } });
-  }, { threshold: 0.18 });
-  document.querySelectorAll("[data-reveal]").forEach((el) => revealIO.observe(el));
-
-  /* ────────────────────────────────────────────────
-     card mouse glow
-  ──────────────────────────────────────────────── */
-  document.querySelectorAll(".card").forEach((card) => {
-    card.addEventListener("pointermove", (e) => {
-      const r = card.getBoundingClientRect();
-      card.style.setProperty("--mx", (e.clientX - r.left) + "px");
-      card.style.setProperty("--my", (e.clientY - r.top) + "px");
-      if (!reduceMotion) {
-        const px = (e.clientX - r.left) / r.width - 0.5;
-        const py = (e.clientY - r.top) / r.height - 0.5;
-        card.style.transform = `perspective(900px) rotateY(${px * 6}deg) rotateX(${-py * 6}deg)`;
-      }
-    });
-    card.addEventListener("pointerleave", () => { card.style.transform = ""; });
+  items.forEach((it) => {
+    const li = document.createElement("li");
+    li.setAttribute("data-reveal", "");
+    li.innerHTML = `
+      <button class="entry" type="button">
+        <span class="entry__type mono">${esc(it.kind)}</span>
+        <span class="entry__title">${esc(it.title)}</span>
+        <span class="entry__meta mono">${esc(it.meta)}</span>
+        <span class="entry__arrow" aria-hidden="true">→</span>
+      </button>`;
+    li.querySelector("button").addEventListener("click", (e) => openReader(it.readerMeta, it.body, e.currentTarget));
+    entriesEl.appendChild(li);
   });
 
-  /* ════════════════════════════════════════════════
-     HERO — neural particle field
-  ════════════════════════════════════════════════ */
-  const heroCanvas = document.getElementById("neuralCanvas");
-  let heroCtx = null, heroW = 0, heroH = 0;
-  let particles = [];
-  const mouse = { x: -9999, y: -9999 };
-
-  function initHero() {
-    const f = fitCanvas(heroCanvas);
-    if (!f) return;
-    heroCtx = f.ctx; heroW = f.w; heroH = f.h;
-    const count = Math.min(110, Math.floor((heroW * heroH) / 16000));
-    particles = Array.from({ length: count }, () => ({
-      x: Math.random() * heroW,
-      y: Math.random() * heroH,
-      vx: (Math.random() - 0.5) * 0.35,
-      vy: (Math.random() - 0.5) * 0.35,
-      r: 1 + Math.random() * 1.8,
-      sig: Math.random() >= 0.75,
-      pulse: Math.random() * Math.PI * 2,
-    }));
-  }
-  window.addEventListener("pointermove", (e) => {
-    const r = heroCanvas.getBoundingClientRect();
-    mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top;
-  }, { passive: true });
-
-  // click the void → a shockwave ripples through the network
-  const shocks = [];
-  document.getElementById("hero").addEventListener("pointerdown", (e) => {
-    if (e.target.closest("a, button")) return;
-    const r = heroCanvas.getBoundingClientRect();
-    const sx = e.clientX - r.left, sy = e.clientY - r.top;
-    shocks.push({ x: sx, y: sy, t0: performance.now() });
-    for (const p of particles) {
-      const dx = p.x - sx, dy = p.y - sy;
-      const d = Math.hypot(dx, dy) || 1;
-      if (d < 320) {
-        const f = (1 - d / 320) * 7;
-        p.vx += (dx / d) * f; p.vy += (dy / d) * f;
-        p.flash = 1;
-      }
-    }
+  const journalEl = $("#journal");
+  C.journal.forEach((j) => {
+    const li = document.createElement("li");
+    li.setAttribute("data-reveal", "");
+    li.innerHTML = `<time datetime="${esc(j.date)}">${esc(j.date)}</time><span>${esc(j.text)}</span>`;
+    journalEl.appendChild(li);
   });
+  observe();
 
-  function drawHero(t) {
-    if (!heroCtx) return;
-    const ctx = heroCtx;
-    ctx.clearRect(0, 0, heroW, heroH);
-    const LINK = 130;
-    for (const p of particles) {
-      p.x += p.vx; p.y += p.vy;
-      // gentle mouse gravity
-      const dx = mouse.x - p.x, dy = mouse.y - p.y;
-      const d2 = dx * dx + dy * dy;
-      if (d2 < 220 * 220 && d2 > 1) {
-        const d = Math.sqrt(d2);
-        p.vx += (dx / d) * 0.012;
-        p.vy += (dy / d) * 0.012;
-      }
-      // shockwaves can exceed cruising speed; friction brings them back down
-      const sp = Math.hypot(p.vx, p.vy);
-      if (sp > 0.6) { p.vx *= 0.94; p.vy *= 0.94; }
-      if (p.flash) p.flash = Math.max(0, p.flash - 0.015);
-      if (p.x < -20) p.x = heroW + 20; if (p.x > heroW + 20) p.x = -20;
-      if (p.y < -20) p.y = heroH + 20; if (p.y > heroH + 20) p.y = -20;
-    }
-    // links
-    ctx.lineWidth = 0.7;
-    for (let i = 0; i < particles.length; i++) {
-      const a = particles[i];
-      for (let j = i + 1; j < particles.length; j++) {
-        const b = particles[j];
-        const dx = a.x - b.x, dy = a.y - b.y;
-        const d = Math.hypot(dx, dy);
-        if (d < LINK) {
-          const o = (1 - d / LINK) * 0.35;
-          ctx.strokeStyle = (a.flash || b.flash) ? rgba(PHOSPHOR, o + Math.max(a.flash || 0, b.flash || 0) * 0.5) : `rgba(140, 200, 170, ${o})`;
-          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
-        }
-      }
-    }
-    // occasional "signal" firing along a random link
-    for (const p of particles) {
-      const glow = 0.55 + 0.45 * Math.sin(t / 600 + p.pulse);
-      ctx.fillStyle = p.sig ? SIGNAL : PHOSPHOR;
-      ctx.globalAlpha = 0.35 + glow * 0.55;
-      ctx.beginPath(); ctx.arc(p.x, p.y, p.r + (p.flash || 0) * 2.5, 0, Math.PI * 2); ctx.fill();
-      ctx.globalAlpha = 1;
-    }
-    // expanding pulse rings
-    for (let i = shocks.length - 1; i >= 0; i--) {
-      const s = shocks[i];
-      const k = (performance.now() - s.t0) / 1100;
-      if (k >= 1) { shocks.splice(i, 1); continue; }
-      ctx.strokeStyle = rgba(PHOSPHOR, (1 - k) * 0.7);
-      ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.arc(s.x, s.y, easeOut(k) * 320, 0, Math.PI * 2); ctx.stroke();
-      ctx.strokeStyle = rgba(SIGNAL, (1 - k) * 0.4);
-      ctx.beginPath(); ctx.arc(s.x, s.y, easeOut(k) * 200, 0, Math.PI * 2); ctx.stroke();
-    }
-  }
-
-  /* ════════════════════════════════════════════════
-     01 · PIPELINE — scroll-driven inference scene
-  ════════════════════════════════════════════════ */
-  const pipeWrap = document.getElementById("pipelineWrap");
-  const pipeCanvas = document.getElementById("pipelineCanvas");
-  const stageEls = document.querySelectorAll(".pipeline__stage");
-  let pipeCtx = null, pipeW = 0, pipeH = 0;
-
-  const PROMPT = "show me how a model thinks";
-  const TOKENS = ["show", "me", "how", "a", "model", "thinks"];
-  const OUTPUT = ["it", "attends,", "then", "predicts", "the", "next", "word."];
-  // deterministic pseudo-random attention weights between token pairs
-  const ATT = [];
-  for (let i = 0; i < TOKENS.length; i++) for (let j = 0; j < i; j++) {
-    const w = Math.abs(Math.sin(i * 12.9898 + j * 78.233) * 43758.5453) % 1;
-    ATT.push({ i, j, w });
-  }
-  const VEC_SEED = TOKENS.map((_, i) =>
-    Array.from({ length: 8 }, (_, k) => Math.abs(Math.sin(i * 7.13 + k * 3.71) * 100) % 1)
-  );
-
-  function initPipe() {
-    const f = fitCanvas(pipeCanvas);
-    if (!f) { pipeCtx = null; return; }
-    pipeCtx = f.ctx; pipeW = f.w; pipeH = f.h;
-  }
-
-  function pipeProgress() {
-    const r = pipeWrap.getBoundingClientRect();
-    const total = r.height - window.innerHeight;
-    return clamp(-r.top / total, 0, 1);
-  }
-
-  function drawPipe() {
-    if (!pipeCtx) return;
-    const r = pipeWrap.getBoundingClientRect();
-    if (r.bottom < 0 || r.top > window.innerHeight) return; // offscreen
-    const p = pipeProgress();
-    const ctx = pipeCtx;
-    ctx.clearRect(0, 0, pipeW, pipeH);
-
-    const small = pipeW < 700;
-    const midY = pipeH * 0.46;
-    const tokenY = midY;
-    const rowW = small ? pipeW * 0.97 : Math.min(pipeW * 0.86, 900);
-    const startX = (pipeW - rowW) / 2;
-    const gap = rowW / TOKENS.length;
-
-    // stage indicator
-    const stage = p < 0.24 ? 0 : p < 0.5 ? 1 : p < 0.76 ? 2 : 3;
-    stageEls.forEach((el, i) => el.classList.toggle("is-active", i === stage));
-
-    const fontMono = (s, w = 400) => `${w} ${s}px "JetBrains Mono", monospace`;
-
-    /* — phase A: prompt → tokens (0 → 0.24) — */
-    const pa = seg(p, 0.0, 0.22);
-    if (pa < 1) {
-      // whole prompt string fading/spacing out
-      ctx.font = fontMono(small ? 18 : 26, 500);
-      ctx.textAlign = "center";
-      ctx.fillStyle = `rgba(232, 240, 238, ${1 - pa})`;
-      ctx.fillText(`"${PROMPT}"`, pipeW / 2, midY - (small ? 70 : 110) * easeOut(pa) - 40);
-    }
-    // token chips slide into place
-    TOKENS.forEach((tok, i) => {
-      const tp = seg(pa, i * 0.09, i * 0.09 + 0.55);
-      if (tp <= 0) return;
-      const targetX = startX + gap * i + gap / 2;
-      const x = lerp(pipeW / 2, targetX, easeOut(tp));
-      const y = tokenY;
-      const alpha = easeOut(tp);
-      const fs = small ? 10.5 : 15;
-      ctx.font = fontMono(fs, 500);
-      const tw = ctx.measureText(tok).width;
-      const padX = small ? 5 : 12, chipH = small ? 24 : 34;
-      ctx.globalAlpha = alpha;
-      ctx.strokeStyle = PHOSPHOR;
-      ctx.lineWidth = 1.2;
-      ctx.fillStyle = rgba(PHOSPHOR, 0.07);
-      roundRect(ctx, x - tw / 2 - padX, y - chipH / 2, tw + padX * 2, chipH, 7);
-      ctx.fill(); ctx.stroke();
-      ctx.fillStyle = "#e8f0ee";
-      ctx.textAlign = "center"; ctx.textBaseline = "middle";
-      ctx.fillText(tok, x, y + 1);
-      // token id
-      ctx.font = fontMono(9);
-      ctx.fillStyle = DIM;
-      ctx.fillText(`#${1000 + i * 137}`, x, y + chipH / 2 + 12);
-      ctx.globalAlpha = 1;
-      ctx.textBaseline = "alphabetic";
-    });
-
-    /* — phase B: embeddings (0.24 → 0.5, fade out during generation) — */
-    const pb = seg(p, 0.24, 0.48);
-    const vecFade = 1 - seg(p, 0.78, 0.92);
-    if (pb > 0 && vecFade > 0) {
-      TOKENS.forEach((tok, i) => {
-        const tp = seg(pb, i * 0.06, i * 0.06 + 0.6);
-        if (tp <= 0) return;
-        const x = startX + gap * i + gap / 2;
-        const baseY = tokenY + (small ? 40 : 56);
-        const barW = small ? 3 : 4.5;
-        const totalW = VEC_SEED[i].length * (barW + 2.4);
-        VEC_SEED[i].forEach((v, k) => {
-          const bh = (small ? 24 : 40) * v * easeOut(seg(tp, k * 0.06, k * 0.06 + 0.5));
-          ctx.fillStyle = k % 2 ? SIGNAL : PHOSPHOR;
-          ctx.globalAlpha = 0.75 * vecFade;
-          ctx.fillRect(x - totalW / 2 + k * (barW + 2.4), baseY + (small ? 26 : 42) - bh, barW, bh);
-        });
-        ctx.globalAlpha = easeOut(tp) * 0.8 * vecFade;
-        ctx.font = fontMono(9);
-        ctx.fillStyle = DIM;
-        ctx.textAlign = "center";
-        ctx.fillText("ℝ⁴⁰⁹⁶", x, baseY + (small ? 42 : 60));
-        ctx.globalAlpha = 1;
-      });
-    }
-
-    /* — phase C: attention arcs (0.5 → 0.76) — */
-    const pc = seg(p, 0.5, 0.74);
-    if (pc > 0) {
-      ATT.forEach((a, idx) => {
-        const ap = seg(pc, (idx % 7) * 0.05, (idx % 7) * 0.05 + 0.55);
-        if (ap <= 0 || a.w < 0.25) return;
-        const x1 = startX + gap * a.j + gap / 2;
-        const x2 = startX + gap * a.i + gap / 2;
-        const arcH = (small ? 40 : 80) + Math.abs(x2 - x1) * 0.22;
-        ctx.strokeStyle = a.w > 0.72 ? PHOSPHOR : a.w > 0.5 ? SIGNAL : "rgba(143,163,160,0.5)";
-        ctx.lineWidth = a.w * 2.6 * ap;
-        ctx.globalAlpha = clamp(a.w, 0.2, 0.9) * ap;
-        ctx.beginPath();
-        ctx.moveTo(x1, tokenY - 24);
-        ctx.quadraticCurveTo((x1 + x2) / 2, tokenY - 24 - arcH, x2, tokenY - 24);
-        ctx.stroke();
-        ctx.globalAlpha = 1;
-      });
-      // caption
-      ctx.font = fontMono(small ? 10 : 12);
-      ctx.fillStyle = `rgba(255, 200, 87, ${easeOut(pc)})`;
-      ctx.textAlign = "center";
-      ctx.fillText("softmax(QKᵀ/√d)·V — every word looks at every other word", pipeW / 2, tokenY - (small ? 96 : 170));
-    }
-
-    /* — phase D: generation (0.76 → 1) — */
-    const pd = seg(p, 0.76, 0.99);
-    if (pd > 0) {
-      const outY = tokenY + (small ? 120 : 170);
-      ctx.font = fontMono(small ? 12 : 21, 500);
-      ctx.textAlign = "left";
-      // measure cumulative widths
-      let acc = 0;
-      const widths = OUTPUT.map((w) => { const m = ctx.measureText(w + " ").width; acc += m; return m; });
-      let ox = pipeW / 2 - acc / 2;
-      const shown = Math.floor(pd * (OUTPUT.length + 1));
-      ctx.fillStyle = DIM;
-      ctx.font = fontMono(small ? 10 : 12);
-      ctx.fillText("▸ output stream", ox, outY - (small ? 22 : 30));
-      ctx.font = fontMono(small ? 12 : 21, 500);
-      OUTPUT.forEach((w, i) => {
-        if (i < shown) {
-          const isLast = i === shown - 1;
-          ctx.fillStyle = isLast ? PHOSPHOR : "#e8f0ee";
-          if (isLast) { ctx.shadowColor = PHOSPHOR; ctx.shadowBlur = 14; }
-          ctx.fillText(w, ox, outY);
-          ctx.shadowBlur = 0;
-        }
-        ox += widths[i];
-      });
-      // caret
-      if (shown <= OUTPUT.length) {
-        const caretOn = Math.floor(performance.now() / 400) % 2 === 0;
-        if (caretOn) {
-          let cxp = pipeW / 2 - acc / 2;
-          for (let i = 0; i < shown; i++) cxp += widths[i];
-          ctx.fillStyle = PHOSPHOR;
-          ctx.fillRect(cxp, outY - (small ? 11 : 18), small ? 7 : 11, small ? 14 : 22);
-        }
-      }
-    }
-  }
-
-  function roundRect(ctx, x, y, w, h, r) {
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.arcTo(x + w, y, x + w, y + h, r);
-    ctx.arcTo(x + w, y + h, x, y + h, r);
-    ctx.arcTo(x, y + h, x, y, r);
-    ctx.arcTo(x, y, x + w, y, r);
-    ctx.closePath();
-  }
-
-  /* ════════════════════════════════════════════════
-     02 · MERN — packets along wires
-  ════════════════════════════════════════════════ */
-  const mernSvg = document.getElementById("mernSvg");
-  const packetsG = document.getElementById("packets");
-  const wires = ["wire1", "wire2", "wire3"].map((id) => document.getElementById(id));
-  const mernNodes = mernSvg.querySelectorAll(".node");
-  let mernVisible = false;
-
-  const packetDefs = [];
-  // forward (request) packets — phosphor squares; return (response) — cyan circles
-  wires.forEach((wire, wi) => {
-    for (let k = 0; k < 2; k++) {
-      const el = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-      el.setAttribute("width", 10); el.setAttribute("height", 10);
-      el.setAttribute("rx", 2);
-      el.setAttribute("class", "packet packet--req");
-      packetsG.appendChild(el);
-      packetDefs.push({ el, wire, dir: 1, phase: wi * 0.18 + k * 0.5, wi });
-      const el2 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-      el2.setAttribute("r", 5.5);
-      el2.setAttribute("class", "packet packet--res");
-      packetsG.appendChild(el2);
-      packetDefs.push({ el: el2, wire, dir: -1, phase: wi * 0.18 + k * 0.5 + 0.28, wi });
-    }
-  });
-  const wireLens = wires.map((w) => w.getTotalLength());
-
-  new IntersectionObserver((es) => es.forEach((e) => (mernVisible = e.isIntersecting)), { threshold: 0.15 })
-    .observe(mernSvg);
-
-  function drawMern(t) {
-    if (!mernVisible) return;
-    const speed = 4200;
-    const lit = new Set();
-    packetDefs.forEach((pk) => {
-      let u = ((t / speed) + pk.phase) % 1;
-      if (pk.dir === -1) u = 1 - u;
-      const len = wireLens[pk.wi];
-      const pt = pk.wire.getPointAtLength(u * len);
-      const yOff = pk.dir === 1 ? -14 : 14;
-      if (pk.el.tagName === "rect") {
-        pk.el.setAttribute("x", pt.x - 5); pk.el.setAttribute("y", pt.y + yOff - 5);
-      } else {
-        pk.el.setAttribute("cx", pt.x); pk.el.setAttribute("cy", pt.y + yOff);
-      }
-      // light nodes near wire endpoints
-      if (u > 0.92) lit.add(pk.wi + 1);
-      if (u < 0.08) lit.add(pk.wi);
-    });
-    mernNodes.forEach((n, i) => n.classList.toggle("is-lit", lit.has(i)));
-  }
-
-  /* ════════════════════════════════════════════════
-     03 · BLUEPRINT — self-drawing on scroll
-  ════════════════════════════════════════════════ */
-  const bpWrap = document.getElementById("blueprintWrap");
-  const bpEdges = [...document.querySelectorAll(".bp-edge")];
-  const bpNodes = [...document.querySelectorAll(".bp-node")];
-  const bpNotes = [...document.querySelectorAll(".bp-note")];
-
-  const bpEdgeLens = bpEdges.map((e) => e.getTotalLength());
-  bpEdges.forEach((e, i) => {
-    if (!e.classList.contains("bp-edge--dash")) {
-      e.style.strokeDasharray = bpEdgeLens[i];
-      e.style.strokeDashoffset = bpEdgeLens[i];
-    } else {
-      e.style.opacity = 0;
-    }
-  });
-  bpNodes.forEach((n) => {
-    const shape = n.querySelector("rect, circle");
-    const len = shape.getTotalLength ? shape.getTotalLength() : 400;
-    shape.style.strokeDasharray = len;
-    shape.style.strokeDashoffset = len;
-    n.querySelectorAll("text").forEach((tx) => (tx.style.opacity = 0));
-  });
-
-  function drawBlueprint() {
-    const r = bpWrap.getBoundingClientRect();
-    if (r.bottom < 0 || r.top > window.innerHeight) return;
-    const total = r.height - window.innerHeight;
-    const p = clamp(-r.top / total, 0, 1);
-
-    // nodes draw first, staggered (0 → 0.55)
-    bpNodes.forEach((n, i) => {
-      const np = seg(p, i * 0.055, i * 0.055 + 0.22);
-      const shape = n.querySelector("rect, circle");
-      const len = parseFloat(shape.style.strokeDasharray);
-      shape.style.strokeDashoffset = len * (1 - easeInOut(np));
-      const tp = seg(np, 0.6, 1);
-      n.querySelectorAll("text").forEach((tx) => (tx.style.opacity = tp));
-    });
-    // edges ink in (0.3 → 0.8)
-    bpEdges.forEach((e, i) => {
-      if (e.classList.contains("bp-edge--dash")) {
-        e.style.opacity = seg(p, 0.62 + i * 0.02, 0.78) * 0.6;
-        return;
-      }
-      const ep = seg(p, 0.3 + i * 0.05, 0.3 + i * 0.05 + 0.2);
-      e.style.strokeDashoffset = bpEdgeLens[i] * (1 - easeInOut(ep));
-    });
-    // margin notes (0.72 → 1)
-    bpNotes.forEach((n, i) => {
-      n.classList.toggle("is-on", p > 0.72 + i * 0.06);
-    });
-  }
-
-  /* ════════════════════════════════════════════════
-     FOOTER — quiet waveform
-  ════════════════════════════════════════════════ */
-  const footCanvas = document.getElementById("footerCanvas");
-  let footCtx = null, footW = 0, footH = 0, footVisible = false;
-  function initFoot() {
-    const f = fitCanvas(footCanvas);
-    if (!f) { footCtx = null; return; }
-    footCtx = f.ctx; footW = f.w; footH = f.h;
-  }
-  new IntersectionObserver((es) => es.forEach((e) => (footVisible = e.isIntersecting)), { threshold: 0.05 })
-    .observe(footCanvas);
-
-  function drawFoot(t) {
-    if (!footCtx || !footVisible) return;
-    const ctx = footCtx;
-    ctx.clearRect(0, 0, footW, footH);
-    for (let line = 0; line < 3; line++) {
-      ctx.beginPath();
-      ctx.strokeStyle = line === 0 ? rgba(PHOSPHOR, 0.18) : line === 1 ? rgba(SIGNAL, 0.12) : "rgba(255,200,87,0.08)";
-      ctx.lineWidth = 1.2;
-      const yBase = footH * (0.55 + line * 0.12);
-      for (let x = 0; x <= footW; x += 6) {
-        const y = yBase +
-          Math.sin(x * 0.008 + t / (900 + line * 300)) * 22 +
-          Math.sin(x * 0.021 + t / (500 + line * 200)) * 8;
-        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-      }
-      ctx.stroke();
-    }
-  }
-
-  /* ════════════════════════════════════════════════
-     CONTENT — research / blog / logbook from content.js
-  ════════════════════════════════════════════════ */
-  const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  /* ───────────── reader ───────────── */
+  const reader = $("#reader"), readerPanel = $(".reader__panel");
+  let lastFocus = null;
 
   function inlineMd(s) {
     return s
       .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
       .replace(/\*(.+?)\*/g, "<em>$1</em>")
       .replace(/`(.+?)`/g, "<code>$1</code>")
-      .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+      .replace(/\[(.+?)\]\((https?:\/\/[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
   }
-
   function mdToHtml(md) {
-    const segs = md.split(/```(?:\w*)\n?/);
-    let html = "";
-    segs.forEach((segRaw, i) => {
-      if (i % 2 === 1) { html += `<pre><code>${esc(segRaw.replace(/\n$/, ""))}</code></pre>`; return; }
-      const blocks = segRaw.split(/\n\s*\n/);
-      blocks.forEach((b) => {
+    return md.split(/```(?:\w*)\n?/).map((seg, i) => {
+      if (i % 2) return `<pre><code>${esc(seg.replace(/\n$/, ""))}</code></pre>`;
+      return seg.split(/\n\s*\n/).map((b) => {
         const t = b.trim();
-        if (!t) return;
-        if (/^## /.test(t)) { html += `<h2>${inlineMd(esc(t.slice(3)))}</h2>`; }
-        else if (/^# /.test(t)) { html += `<h1>${inlineMd(esc(t.slice(2)))}</h1>`; }
-        else if (/^- /m.test(t)) {
-          const items = t.split("\n").filter((l) => /^- /.test(l.trim()));
-          html += "<ul>" + items.map((l) => `<li>${inlineMd(esc(l.trim().slice(2)))}</li>`).join("") + "</ul>";
+        if (!t) return "";
+        if (t.startsWith("## ")) return `<h2>${inlineMd(esc(t.slice(3)))}</h2>`;
+        if (t.startsWith("# ")) return `<h1>${inlineMd(esc(t.slice(2)))}</h1>`;
+        if (/^- /m.test(t)) {
+          return "<ul>" + t.split("\n").filter((l) => /^- /.test(l.trim()))
+            .map((l) => `<li>${inlineMd(esc(l.trim().slice(2)))}</li>`).join("") + "</ul>";
         }
-        else { html += `<p>${inlineMd(esc(t)).replace(/\n/g, "<br/>")}</p>`; }
-      });
-    });
-    return html;
+        return `<p>${inlineMd(esc(t)).replace(/\n/g, "<br/>")}</p>`;
+      }).join("");
+    }).join("");
   }
-
-  const C = window.SITE_CONTENT || { research: [], blog: [], journal: [] };
-  const reader = document.getElementById("reader");
-  const readerMeta = document.getElementById("readerMeta");
-  const readerBody = document.getElementById("readerBody");
-
-  function openReader(meta, body) {
-    readerMeta.textContent = meta;
-    readerBody.innerHTML = mdToHtml(body);
+  function openReader(meta, body, from) {
+    lastFocus = from || document.activeElement;
+    $("#readerMeta").textContent = meta;
+    $("#readerBody").innerHTML = mdToHtml(body);
     reader.classList.add("is-open");
     reader.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
-    reader.querySelector(".reader__panel").scrollTop = 0;
+    readerPanel.scrollTop = 0;
+    setTimeout(() => readerPanel.focus({ preventScroll: true }), 50);
   }
   function closeReader() {
+    if (!reader.classList.contains("is-open")) return;
     reader.classList.remove("is-open");
     reader.setAttribute("aria-hidden", "true");
     document.body.style.overflow = "";
+    if (lastFocus) lastFocus.focus({ preventScroll: true });
   }
-  document.getElementById("readerClose").addEventListener("click", closeReader);
-  document.getElementById("readerScrim").addEventListener("click", closeReader);
-  window.addEventListener("keydown", (e) => { if (e.key === "Escape") closeReader(); });
+  $("#readerClose").addEventListener("click", closeReader);
+  $("#readerScrim").addEventListener("click", closeReader);
+  addEventListener("keydown", (e) => { if (e.key === "Escape") closeReader(); });
 
-  // research cards
-  const researchGrid = document.getElementById("researchGrid");
-  C.research.forEach((r) => {
-    const el = document.createElement("button");
-    el.className = "paper";
-    el.setAttribute("data-reveal", "");
-    el.setAttribute("data-hover", "");
-    el.innerHTML = `
-      <div class="paper__top">
-        <span class="paper__id">[${esc(r.id)}]</span>
-        <span class="paper__status paper__status--${esc(r.status)}">${esc(r.status)}</span>
-      </div>
-      <h3>${esc(r.title)}</h3>
-      <p class="paper__abstract">${esc(r.abstract)}</p>
-      <div class="paper__foot">
-        <div class="paper__tags">${r.tags.map((t) => `<span>${esc(t)}</span>`).join("")}</div>
-        <span class="paper__read">read →</span>
-      </div>`;
-    el.addEventListener("click", () => openReader(`research · ${r.id} · ${r.date} · ${r.status}`, r.body));
-    researchGrid.appendChild(el);
-  });
-
-  // blog list
-  const blogList = document.getElementById("blogList");
-  C.blog.forEach((b, i) => {
-    const el = document.createElement("button");
-    el.className = "post";
-    el.setAttribute("data-reveal", "");
-    el.setAttribute("data-hover", "");
-    el.innerHTML = `
-      <span class="post__idx">${String(i + 1).padStart(2, "0")}</span>
-      <span class="post__title">${esc(b.title)}</span>
-      <span class="post__date">${esc(b.date)} · ${b.minutes} min</span>
-      <span class="post__arrow">⟶</span>
-      <span class="post__tags">${b.tags.map((t) => "#" + esc(t)).join("  ")}</span>`;
-    el.addEventListener("click", () => openReader(`blog · ${b.date} · ${b.minutes} min read`, b.body));
-    blogList.appendChild(el);
-  });
-
-  // logbook
-  const logbook = document.getElementById("logbook");
-  C.journal.forEach((j) => {
-    const el = document.createElement("div");
-    el.className = "log-entry";
-    el.setAttribute("data-reveal", "");
-    el.innerHTML = `
-      <div class="log-entry__date"><span class="log-entry__icon">${esc(j.icon || "✎")}</span>${esc(j.date)}</div>
-      <p class="log-entry__text">${esc(j.text)}</p>`;
-    logbook.appendChild(el);
-  });
-
-  // observe the dynamically created reveal elements
-  document.querySelectorAll(".paper[data-reveal], .post[data-reveal], .log-entry[data-reveal]")
-    .forEach((el) => revealIO.observe(el));
-
-  /* ════════════════════════════════════════════════
-     mobile menu
-  ════════════════════════════════════════════════ */
-  const burger = document.getElementById("burger");
-  const mobileMenu = document.getElementById("mobileMenu");
-  function toggleMenu(force) {
-    const open = force !== undefined ? force : !mobileMenu.classList.contains("is-open");
-    mobileMenu.classList.toggle("is-open", open);
-    burger.classList.toggle("is-open", open);
-    burger.setAttribute("aria-expanded", open);
-    mobileMenu.setAttribute("aria-hidden", !open);
-    document.body.style.overflow = open ? "hidden" : "";
+  /* ───────────── studio: lights down ───────────── */
+  const studio = $("#studio");
+  function nightShift() {
+    const r = studio.getBoundingClientRect();
+    const mid = innerHeight * 0.55;
+    const night = r.top < mid && r.bottom > innerHeight * 0.45;
+    document.documentElement.classList.toggle("is-night", night);
   }
-  burger.addEventListener("click", () => toggleMenu());
-  mobileMenu.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => toggleMenu(false)));
+  addEventListener("scroll", nightShift, { passive: true });
+  nightShift();
 
-  /* ════════════════════════════════════════════════
-     master loop + resize
-  ════════════════════════════════════════════════ */
-  window.addEventListener("accentchange", (e) => {
-    PHOSPHOR = e.detail.phosphor;
-    SIGNAL = e.detail.signal;
-  });
+  /* ═══════════════════════════════════════════════
+     INTRO — a plotter's line field
+     Ridgelines drawn back to front; each one occludes
+     the ones behind it. The cursor lifts the terrain.
+  ═══════════════════════════════════════════════ */
+  const field = $("#field");
+  let fctx = null, fW = 0, fH = 0, fVisible = true;
+  const ptr = { x: -1e4, y: -1e4, sx: -1e4, sy: -1e4 };
+  const LINES = [];
 
-  function initAll() { initHero(); initPipe(); initFoot(); }
-  initAll();
-  let resizeT;
-  window.addEventListener("resize", () => { clearTimeout(resizeT); resizeT = setTimeout(initAll, 150); });
-
-  let heroVisible = true;
-  new IntersectionObserver((es) => es.forEach((e) => (heroVisible = e.isIntersecting)), { threshold: 0 })
-    .observe(heroCanvas);
-
-  function loop(t) {
-    if (!reduceMotion) {
-      if (heroVisible) drawHero(t);
-      drawPipe();
-      drawMern(t);
-      drawBlueprint();
-      drawFoot(t);
-    } else {
-      // reduced motion: render final states statically once
-      drawPipe();
-      drawBlueprint();
+  function initField() {
+    const r = field.getBoundingClientRect();
+    if (!r.width) return;
+    fW = r.width; fH = r.height;
+    fctx = fitCanvas(field, fW, fH);
+    const n = Math.round(clampN(fH / 13, 18, 44));
+    LINES.length = 0;
+    for (let i = 0; i < n; i++) {
+      LINES.push({
+        p1: Math.random() * 6.28, p2: Math.random() * 6.28, p3: Math.random() * 6.28,
+        center: 0.55 + (Math.random() - 0.5) * 0.18,
+      });
     }
-    requestAnimationFrame(loop);
   }
-  requestAnimationFrame(loop);
+  function clampN(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+  addEventListener("pointermove", (e) => {
+    const r = field.getBoundingClientRect();
+    ptr.x = e.clientX - r.left; ptr.y = e.clientY - r.top;
+  }, { passive: true });
+  document.addEventListener("pointerleave", () => { ptr.x = ptr.y = -1e4; });
+
+  function drawField(t) {
+    if (!fctx) return;
+    const ctx = fctx;
+    const paper = css("--paper") || "#f3f1ec";
+    const ink = css("--ink") || "#141311";
+    const accent = css("--accent") || "#d8452b";
+    ptr.sx = ptr.sx < -9e3 ? ptr.x : lerp(ptr.sx, ptr.x, 0.08);
+    ptr.sy = ptr.sy < -9e3 ? ptr.y : lerp(ptr.sy, ptr.y, 0.08);
+
+    ctx.clearRect(0, 0, fW, fH);
+    const n = LINES.length;
+    // leave headroom above the back ridge so its peaks never clip
+    const gap = (fH - 6) / (n + 6), top = gap * 6.5;
+    const time = t * 0.00018;
+    const step = fW > 900 ? 5 : 7;
+
+    // which ridge is nearest the cursor (it gets the accent)
+    let hot = -1;
+    if (ptr.sy > 0 && ptr.sy < fH) hot = Math.round((ptr.sy - top) / gap);
+
+    for (let i = 0; i < n; i++) {
+      const L = LINES[i];
+      const base = top + i * gap;
+      const cx = fW * L.center;
+      const spread = fW * 0.2;
+      const pts = [];
+      for (let x = 0; x <= fW + step; x += step) {
+        const env = Math.exp(-Math.pow((x - cx) / spread, 2));
+        const nse =
+          0.55 * Math.sin(x * 0.011 + L.p1 + time * 3.1) +
+          0.30 * Math.sin(x * 0.027 - L.p2 + time * 4.7) +
+          0.15 * Math.sin(x * 0.061 + L.p3 - time * 6.3);
+        let lift = env * (0.5 + 0.5 * nse) * gap * 5.2 + (0.5 + 0.5 * nse) * gap * 0.35;
+        // the cursor raises a soft hill
+        const dx = x - ptr.sx, dy = base - ptr.sy;
+        lift += Math.exp(-(dx * dx) / 9000 - (dy * dy) / 5200) * gap * 4.4;
+        pts.push(x, base - lift);
+      }
+      // occlude what's behind, then ink only the ridge itself
+      ctx.beginPath();
+      for (let k = 0; k < pts.length; k += 2) ctx.lineTo(pts[k], pts[k + 1]);
+      ctx.lineTo(fW + step, fH); ctx.lineTo(0, fH); ctx.closePath();
+      ctx.fillStyle = paper;
+      ctx.fill();
+      ctx.beginPath();
+      for (let k = 0; k < pts.length; k += 2) ctx.lineTo(pts[k], pts[k + 1]);
+      ctx.lineWidth = i === hot ? 1.4 : 1;
+      ctx.strokeStyle = i === hot ? accent : ink;
+      ctx.globalAlpha = i === hot ? 1 : 0.28 + 0.5 * (i / n);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+  }
+  new IntersectionObserver((es) => es.forEach((e) => (fVisible = e.isIntersecting))).observe(field);
+
+  /* ═══════════════════════════════════════════════
+     WORK — a small drawing follows the cursor
+  ═══════════════════════════════════════════════ */
+  const peek = $("#peek"), peekCanvas = $("#peekCanvas");
+  const PW = 300, PH = 210;
+  let pctx = null, peekOn = false;
+  const pk = { x: 0, y: 0, tx: 0, ty: 0, rot: 0 };
+
+  function rng(seed) {
+    let s = seed * 9301 + 49297;
+    return () => ((s = (s * 9301 + 49297) % 233280) / 233280);
+  }
+
+  // four plotter studies — one per project, chosen by seed
+  function drawStudy(seed) {
+    const ctx = pctx, r = rng(seed);
+    const accent = "#d8452b", paper = "#f3f1ec";
+    ctx.fillStyle = accent;
+    ctx.fillRect(0, 0, PW, PH);
+    ctx.strokeStyle = paper; ctx.fillStyle = paper;
+    ctx.lineWidth = 1;
+    const kind = seed % 4;
+    if (kind === 0) {
+      // nested circles drifting off-centre
+      const cx = PW * (0.35 + r() * 0.3), cy = PH * 0.55;
+      for (let i = 1; i < 26; i++) {
+        ctx.beginPath();
+        ctx.arc(cx + i * 2.2, cy - i * 0.8, i * 7, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    } else if (kind === 1) {
+      // dot grid, size follows a wave
+      for (let y = 18; y < PH; y += 14) {
+        for (let x = 18; x < PW; x += 14) {
+          const v = 0.5 + 0.5 * Math.sin(x * 0.03 + y * 0.05 + seed);
+          ctx.beginPath(); ctx.arc(x, y, 0.6 + v * 3.6, 0, Math.PI * 2); ctx.fill();
+        }
+      }
+    } else if (kind === 2) {
+      // hatching with a void
+      const vx = PW * (0.3 + r() * 0.4), vy = PH * (0.35 + r() * 0.3), vr = 46;
+      for (let k = -PH; k < PW + PH; k += 6) {
+        ctx.beginPath();
+        let pen = false;
+        for (let x = 0; x <= PW; x += 3) {
+          const y = x - k;
+          if (y < 0 || y > PH) { pen = false; continue; }
+          const inside = (x - vx) ** 2 + (y - vy) ** 2 < vr * vr;
+          if (inside) { pen = false; continue; }
+          pen ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+          pen = true;
+        }
+        ctx.stroke();
+      }
+    } else {
+      // stacked waves
+      for (let i = 0; i < 18; i++) {
+        ctx.beginPath();
+        const base = 20 + i * 10.5;
+        for (let x = 0; x <= PW; x += 4) {
+          const y = base + Math.sin(x * 0.035 + i * 0.5 + seed) * 8 * Math.sin(x / PW * Math.PI);
+          x ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+        }
+        ctx.stroke();
+      }
+    }
+  }
+
+  if (finePointer && !reduceMotion) {
+    pctx = fitCanvas(peekCanvas, PW, PH);
+    const rows = $$(".row");
+    rows.forEach((row) => {
+      row.addEventListener("pointerenter", () => {
+        drawStudy(parseInt(row.dataset.seed, 10) || 1);
+        peekOn = true;
+        peek.classList.add("is-on");
+      });
+    });
+    $("#workRows").addEventListener("pointerleave", () => { peekOn = false; peek.classList.remove("is-on"); });
+    addEventListener("pointermove", (e) => { pk.tx = e.clientX; pk.ty = e.clientY; }, { passive: true });
+    addEventListener("scroll", () => { if (peekOn) { peekOn = false; peek.classList.remove("is-on"); } }, { passive: true });
+  }
+
+  function movePeek() {
+    if (!pctx) return;
+    const px = pk.x, py = pk.y;
+    pk.x = lerp(pk.x, pk.tx + 28, 0.14);
+    pk.y = lerp(pk.y, pk.ty - PH / 2, 0.14);
+    pk.rot = lerp(pk.rot, Math.max(-8, Math.min(8, (pk.x - px) * 0.4)), 0.12);
+    const x = Math.min(pk.x, innerWidth - PW - 16);
+    peek.style.translate = `${x}px ${pk.y}px`;
+    peek.style.rotate = `${pk.rot.toFixed(2)}deg`;
+  }
+
+  /* ───────────── loop + resize ───────────── */
+  initField();
+  let rT;
+  addEventListener("resize", () => { clearTimeout(rT); rT = setTimeout(initField, 150); });
+
+  if (reduceMotion) {
+    drawField(0);
+  } else {
+    (function loop(t) {
+      if (fVisible) drawField(t);
+      movePeek();
+      requestAnimationFrame(loop);
+    })(0);
+  }
 })();
