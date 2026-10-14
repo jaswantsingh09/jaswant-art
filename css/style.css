@@ -452,3 +452,120 @@ img { display: block; max-width: 100%; }
   *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
   [data-reveal], .w > span { opacity: 1; transform: none; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   CASE STUDY PAGES (work/*)
+   ═══════════════════════════════════════════════════════════════ */
+.cs-hero { padding: clamp(110px, 19vh, 190px) var(--pad) 0; }
+.cs-hero__crumb { color: var(--ink-3); margin-bottom: clamp(28px, 5vh, 48px); }
+.cs-hero__crumb a { color: var(--ink-2); }
+.cs-hero__crumb a:hover { color: var(--accent); }
+.cs-hero__title {
+  font-size: clamp(56px, 12vw, 190px); font-weight: 400;
+  letter-spacing: -0.055em; line-height: 0.92;
+}
+.cs-hero__lede {
+  font-family: var(--serif); font-style: italic; font-weight: 300;
+  font-size: clamp(24px, 2.8vw, 40px); line-height: 1.2; letter-spacing: -0.01em;
+  color: var(--accent);
+  max-width: 24em; margin-top: clamp(22px, 4vh, 40px);
+}
+.cs-meta {
+  display: grid; grid-template-columns: repeat(4, 1fr); column-gap: var(--gap); row-gap: 18px;
+  margin-top: clamp(56px, 10vh, 110px); font-size: 14px;
+}
+.cs-meta div { border-top: 1px solid var(--rule); padding-top: 12px; }
+.cs-meta dt { font-family: var(--mono); font-size: 12px; color: var(--ink-3); margin-bottom: 4px; }
+@media (max-width: 900px) { .cs-meta { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .cs-meta { grid-template-columns: 1fr; } }
+
+.cs-stats {
+  display: grid; grid-template-columns: repeat(4, 1fr); column-gap: var(--gap); row-gap: 40px;
+  padding: clamp(80px, 14vh, 150px) var(--pad) 0;
+}
+.cs-stat { border-top: 1px solid var(--ink); padding-top: 16px; }
+.cs-stat__n {
+  font-size: clamp(36px, 4.2vw, 64px); letter-spacing: -0.045em; line-height: 1;
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.cs-stat__from { color: var(--ink-3); }
+.cs-stat__l { margin-top: 14px; font-size: 14.5px; color: var(--ink-2); max-width: 26ch; }
+@media (max-width: 900px) { .cs-stats { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .cs-stat:first-child { grid-column: 1 / -1; } }
+
+.cs-block { padding: clamp(96px, 16vh, 170px) var(--pad) 0; }
+.cs-intro { color: var(--ink-2); margin: -20px 0 36px; }
+.cs-prose { max-width: 62ch; margin-left: calc((100% + var(--gap)) / 12); }
+.cs-prose p { color: var(--ink-2); font-size: 17px; line-height: 1.65; margin-bottom: 18px; }
+.cs-prose em, .cs-big em { font-family: var(--serif); font-style: italic; color: var(--accent); }
+.cs-big {
+  font-size: clamp(22px, 2.3vw, 34px) !important; line-height: 1.25 !important;
+  letter-spacing: -0.02em; color: var(--ink) !important; margin-bottom: 28px !important;
+}
+@media (max-width: 760px) { .cs-prose { margin-left: 0; } }
+
+/* six-step pipeline: a 3×2 grid on desktop, a column on phones; a rule draws across as it enters */
+.pipe {
+  display: grid; grid-template-columns: repeat(3, 1fr); column-gap: var(--gap); row-gap: 44px;
+  counter-reset: step;
+}
+.pipe__step { position: relative; padding-top: 18px; }
+.pipe__step::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px;
+  background: var(--ink); transform: scaleX(0); transform-origin: left;
+  transition: transform 1.2s var(--ease) 0.15s;
+}
+.pipe__step.is-in::before { transform: scaleX(1); }
+.pipe__step::after {
+  content: ""; position: absolute; left: 0; top: -4px; width: 9px; height: 9px; border-radius: 50%;
+  background: var(--accent);
+}
+.pipe__n { color: var(--ink-3); }
+.pipe__step h3 { font-size: clamp(20px, 1.9vw, 26px); font-weight: 400; letter-spacing: -0.02em; margin: 6px 0 10px; }
+.pipe__step p { color: var(--ink-2); font-size: 15px; max-width: 40ch; }
+@media (max-width: 900px) { .pipe { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .pipe { grid-template-columns: 1fr; row-gap: 34px; } }
+
+.cs-split {
+  display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--gap); row-gap: 40px; align-items: start;
+}
+.cs-split > :first-child { grid-column: 2 / span 5; margin-left: 0; }
+.cs-split > :last-child { grid-column: 8 / span 5; }
+@media (max-width: 900px) { .cs-split > :first-child, .cs-split > :last-child { grid-column: 1 / -1; } }
+
+.cs-list li, .cs-gaps li {
+  padding: 16px 0; border-top: 1px solid var(--rule); color: var(--ink-2); font-size: 15.5px;
+}
+.cs-list li:first-child { border-top: none; padding-top: 0; }
+.cs-list strong { color: var(--ink); font-weight: 500; }
+.cs-gaps { max-width: 62ch; margin-left: calc((100% + var(--gap)) / 12); counter-reset: gap; }
+.cs-gaps li { counter-increment: gap; display: grid; grid-template-columns: 40px 1fr; }
+.cs-gaps li::before { content: "0" counter(gap); font-family: var(--mono); font-size: 12px; color: var(--ink-3); padding-top: 3px; }
+@media (max-width: 760px) { .cs-gaps { margin-left: 0; } }
+
+.cs-table table { width: 100%; border-collapse: collapse; font-size: 14.5px; font-variant-numeric: tabular-nums; }
+.cs-table caption { text-align: left; color: var(--ink-3); padding-bottom: 12px; }
+.cs-table th, .cs-table td { text-align: left; padding: 11px 8px 11px 0; border-bottom: 1px solid var(--rule); font-weight: 400; }
+.cs-table thead th { font-family: var(--mono); font-size: 12px; color: var(--ink-3); border-bottom-color: var(--ink); }
+.cs-table tbody th { color: var(--ink-2); }
+.cs-table td b { font-weight: 500; color: var(--accent); }
+.cs-table figcaption { margin-top: 12px; color: var(--ink-3); }
+
+.cs-cols { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: var(--gap); row-gap: 36px; }
+.cs-cols .label { margin-bottom: 12px; padding-top: 12px; border-top: 1px solid var(--rule); }
+.cs-cols p { color: var(--ink-2); font-size: 15.5px; max-width: 40ch; }
+@media (max-width: 900px) { .cs-cols { grid-template-columns: 1fr; } }
+
+.cs-next { padding: clamp(110px, 18vh, 200px) var(--pad) 0; }
+.cs-next__link { display: block; border-top: 1px solid var(--ink); padding-top: 16px; }
+.cs-next__title {
+  display: block; margin-top: 8px;
+  font-size: clamp(36px, 6vw, 96px); letter-spacing: -0.045em; line-height: 1;
+  transition: color 0.35s, transform 0.6s var(--ease);
+}
+.cs-next__link:hover .cs-next__title { color: var(--accent); transform: translateX(12px); }
+
+/* homepage: rows that open a case study */
+.row--link { cursor: pointer; }
+.row__link::after { content: ""; position: absolute; inset: 0; }
+.row__cta { color: var(--accent); }

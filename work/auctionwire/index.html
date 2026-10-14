@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AuctionWire: reading every slab — Jaswant Singh</title>
+<meta name="description" content="Case study: the vision-model service that reads grader, cert number and grade off graded trading-card slabs in auction listings, verifies them against the Gemrate registry, and gates every change on a frozen eval set." />
+<meta name="theme-color" content="#f3f1ec" />
+<link rel="canonical" href="https://jaswant.art/work/auctionwire/" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://jaswant.art/work/auctionwire/" />
+<meta property="og:title" content="AuctionWire: reading every slab" />
+<meta property="og:description" content="A fine-tuned vision model, a registry check and an eval gate: how AuctionWire verifies graded cards from listing photos." />
+<meta property="og:image" content="https://jaswant.art/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:creator" content="@CodeComposer009" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png" />
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&family=Geist+Mono:wght@400&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../css/style.css" />
+</head>
+<body class="case">
+
+<header class="top">
+  <a class="top__name" href="../../">Jaswant Singh</a>
+  <nav class="top__nav" aria-label="Primary">
+    <a href="../../#work">Work</a>
+    <a href="../../#experience" class="top__wide">Experience</a>
+    <a href="../../#writing">Research</a>
+    <a href="../../#studio">Studio</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <span class="top__time mono" id="clock" aria-label="Local time"></span>
+</header>
+
+<main>
+
+  <!-- ─────────── title ─────────── -->
+  <section class="cs-hero">
+    <p class="cs-hero__crumb mono"><a href="../../#work">← Selected work</a> / 01</p>
+    <h1 class="cs-hero__title" data-split>AuctionWire</h1>
+    <p class="cs-hero__lede" data-reveal>
+      Reading the certificate on every graded card, from whatever photo the auction house happened to post.
+    </p>
+
+    <dl class="cs-meta" data-reveal>
+      <div><dt>Role</dt><dd>Designed and built the OCR service and its model</dd></div>
+      <div><dt>For</dt><dd>AuctionWire, at Intelligaia Technologies</dd></div>
+      <div><dt>Stack</dt><dd>Python, FastAPI, Qwen vision models (QLoRA), PostgreSQL, Gemrate API</dd></div>
+      <div><dt>Platform</dt><dd>Next.js and Node.js</dd></div>
+    </dl>
+  </section>
+
+  <!-- ─────────── numbers ─────────── -->
+  <section class="cs-stats" aria-label="Results">
+    <div class="cs-stat" data-reveal>
+      <p class="cs-stat__n"><span class="cs-stat__from">85%</span> → <span data-count="98">98</span>%</p>
+      <p class="cs-stat__l">cert-number accuracy after fine-tuning a Qwen vision model with QLoRA</p>
+    </div>
+    <div class="cs-stat" data-reveal>
+      <p class="cs-stat__n"><span data-count="95">95</span>%+</p>
+      <p class="cs-stat__l">accuracy on rotated cards</p>
+    </div>
+    <div class="cs-stat" data-reveal>
+      <p class="cs-stat__n"><span data-count="71">71</span></p>
+      <p class="cs-stat__l">listing sources registered: auction houses, marketplaces and eBay</p>
+    </div>
+    <div class="cs-stat" data-reveal>
+      <p class="cs-stat__n">0</p>
+      <p class="cs-stat__l">third-party OCR providers. The service replaced the paid one</p>
+    </div>
+  </section>
+
+  <!-- ─────────── problem ─────────── -->
+  <section class="cs-block">
+    <header class="block__head">
+      <span class="block__num mono">01</span>
+      <h2 class="block__title">The problem</h2>
+    </header>
+    <div class="cs-prose" data-reveal>
+      <p class="cs-big">
+        A graded card is only worth what its slab says. To trust a listing, AuctionWire needs the grader,
+        the certificate number and the grade, and they have to belong to <em>this</em> card.
+      </p>
+      <p>
+        AuctionWire gathers graded trading-card listings from dozens of auction houses and eBay into one place.
+        The photos are whatever each house posted: small, rotated, glare on the plastic, sometimes the back of the slab first.
+        Every grader prints its label differently, and the certificate formats differ too. PSA uses 8 to 10 digits,
+        BGS 10 to 11 with leading zeros, and SGC 7 to 10 with an optional dash.
+      </p>
+      <p>
+        The failure that matters isn't a card we can't read. It's a card we read <em>confidently and wrongly</em>:
+        a plausible cert that belongs to some other card silently attaches the wrong population, sales history and value.
+        So the system had to be built around verification, not just recognition.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─────────── pipeline ─────────── -->
+  <section class="cs-block">
+    <header class="block__head">
+      <span class="block__num mono">02</span>
+      <h2 class="block__title">How a card is read</h2>
+    </header>
+    <p class="cs-intro" data-reveal>Six steps, in order, stopping at the first one that settles the card.</p>
+
+    <ol class="pipe" id="pipe">
+      <li class="pipe__step" data-reveal>
+        <span class="pipe__n mono">1</span>
+        <h3>Fetch the image</h3>
+        <p>Download the listing photo, retrying through a proxy or a headless browser for hosts that block plain clients. Downscale to the model's image budget. If the first image shows no slab, try the next.</p>
+      </li>
+      <li class="pipe__step" data-reveal>
+        <span class="pipe__n mono">2</span>
+        <h3>Read the label</h3>
+        <p>A fine-tuned Qwen vision model returns grader, cert, grade, year, brand, player and card number as JSON, with a confidence. It is told to read the grader's name, not guess from label colour.</p>
+      </li>
+      <li class="pipe__step" data-reveal>
+        <span class="pipe__n mono">3</span>
+        <h3>Guard the cert</h3>
+        <p>Reject certs that can't belong to this card before spending a registry call: placeholder values, wrong formats, and “attractor” certs the model tends to write onto unrelated cards.</p>
+      </li>
+      <li class="pipe__step" data-reveal>
+        <span class="pipe__n mono">4</span>
+        <h3>Verify with Gemrate</h3>
+        <p>Look the cert up in the Gemrate registry and compare its grade with the label's. For PSA and SGC a contradiction fails the read; dual-graded slabs count either grade.</p>
+      </li>
+      <li class="pipe__step" data-reveal>
+        <span class="pipe__n mono">5</span>
+        <h3>Escalate</h3>
+        <p>If the read fails, is unsure, or the cert isn't found, a larger 30B vision model re-reads it. Then comes a registry search by the card's title. What's still unresolved goes to a person.</p>
+      </li>
+      <li class="pipe__step" data-reveal>
+        <span class="pipe__n mono">6</span>
+        <h3>Store one record</h3>
+        <p>Write one verified record per listing: the label's reading plus Gemrate's full record of the cert, including set, parallel, subgrades and population.</p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ─────────── guards ─────────── -->
+  <section class="cs-block">
+    <header class="block__head">
+      <span class="block__num mono">03</span>
+      <h2 class="block__title">Guarding against confident mistakes</h2>
+    </header>
+    <div class="cs-split">
+      <p class="cs-big" data-reveal>
+        Vision models don't just fail to read. Some numbers they <em>love</em> to write, and those numbers turn up on cards they don't belong to.
+      </p>
+      <ul class="cs-list" data-reveal>
+        <li><strong>Attractor certs.</strong> Any cert seen on 25 or more distinct cards is treated as suspect. The list is relearned from the corpus every 12 hours and cached, so startup never waits for it.</li>
+        <li><strong>Placeholders and formats.</strong> Values like 1000000000 or 8888888888 are rejected outright, and each grader's cert shape is enforced.</li>
+        <li><strong>Grade agreement.</strong> A cert that exists but disagrees with the label's grade is usually another card. Enforcing this for PSA showed that 64.7% of the PSA certs that still disagreed were exactly that.</li>
+        <li><strong>One outcome per read.</strong> Every read ends in exactly one named state: verified, verified by title, not found, grade mismatch, consensus, low confidence, no slab, or queued for review. Nothing is silently “probably fine”.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ─────────── evals ─────────── -->
+  <section class="cs-block">
+    <header class="block__head">
+      <span class="block__num mono">04</span>
+      <h2 class="block__title">Evaluated like code</h2>
+    </header>
+    <div class="cs-split">
+      <div class="cs-prose" data-reveal>
+        <p>
+          Any change to the prompt, model, adapter or image budget runs against a frozen eval set and is compared
+          with the production baseline. The gate fails the change if cert accuracy on real slabs drops more than a point
+          overall, or more than three for any grader with 30 or more cards. It also fails if more real slabs get answered
+          “no slab”.
+        </p>
+        <p>
+          The set is 615 production images, with Gemrate's record as ground truth for every slab. It over-weights the hard cases
+          on purpose: 165 of them are cards that only the fallback model, a retry or a person got right.
+        </p>
+        <p>
+          The larger 30B model is faster, but it fails the gate. Its BGS cert accuracy is 7.7 points lower and it misses 2.6% of slabs,
+          so it stays the fallback and the fine-tuned model reads first.
+        </p>
+      </div>
+      <figure class="cs-table" data-reveal>
+        <table>
+          <caption class="mono">Baseline on eval set v1 (615 images)</caption>
+          <thead>
+            <tr><th scope="col">Metric</th><th scope="col">Fine-tuned (prod)</th><th scope="col">30B fallback</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Cert exact, real slabs</th><td><b>95.4%</b></td><td>95.0%</td></tr>
+            <tr><th scope="row">Grade</th><td><b>93.3%</b></td><td>92.9%</td></tr>
+            <tr><th scope="row">Real slabs missed</th><td><b>0.0%</b></td><td>2.6%</td></tr>
+            <tr><th scope="row">No-slab images correct</th><td>100%</td><td>100%</td></tr>
+            <tr><th scope="row">Median latency</th><td>4.5 s</td><td>3.0 s</td></tr>
+          </tbody>
+        </table>
+        <figcaption class="mono">The set: 400 verified · 165 hard · 50 with no slab</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ─────────── system ─────────── -->
+  <section class="cs-block">
+    <header class="block__head">
+      <span class="block__num mono">05</span>
+      <h2 class="block__title">Live first, backlog ahead</h2>
+    </header>
+    <div class="cs-cols">
+      <div data-reveal>
+        <h3 class="label">Ahead of time</h3>
+        <p>A background worker reads the backlog across every source, so most cards are already verified before anyone opens them.</p>
+      </div>
+      <div data-reveal>
+        <h3 class="label">Live comes first</h3>
+        <p>When a user opens a card, the live request pauses the backlog's next model call. Concurrent requests for the same listing merge into one, and stored results answer instantly. Load tested at p95 5.8 s with four calls running at once.</p>
+      </div>
+      <div data-reveal>
+        <h3 class="label">People close the loop</h3>
+        <p>Cards neither model can settle land in a review console: approve, correct, mark “no slab” or reject. Every review is stored as a training sample for the next fine-tune.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── honest gaps ─────────── -->
+  <section class="cs-block">
+    <header class="block__head">
+      <span class="block__num mono">06</span>
+      <h2 class="block__title">What's still hard</h2>
+    </header>
+    <ul class="cs-gaps" data-reveal>
+      <li>Accuracy depends on the source. Label fields are 89–96% right on eBay but far lower on some auction houses, mostly because of tiny photos and autograph slabs.</li>
+      <li>Autograph slabs carry their own cert series, so a correct-looking read can land on a real but different cert. Grade enforcement now catches the PSA share of these.</li>
+      <li>Some fields never come from the label at all. Set name, parallel and subgrades are taken from the registry once a cert is verified.</li>
+    </ul>
+  </section>
+
+  <!-- ─────────── next ─────────── -->
+  <nav class="cs-next" aria-label="More">
+    <a href="../../#work" class="cs-next__link">
+      <span class="label">Back to</span>
+      <span class="cs-next__title">Selected work →</span>
+    </a>
+  </nav>
+
+  <footer class="contact" id="contact">
+    <p class="label">Contact</p>
+    <div class="contact__mailrow">
+      <a class="contact__mail" href="mailto:jaswantsinghjsn@gmail.com" data-split>jaswantsinghjsn@gmail.com</a>
+      <button class="contact__copy mono" type="button" data-copy="jaswantsinghjsn@gmail.com" aria-live="polite">Copy</button>
+    </div>
+    <div class="contact__row">
+      <nav class="contact__links" aria-label="Elsewhere">
+        <a href="../../resume.pdf" target="_blank" rel="noopener">Résumé (PDF)</a>
+        <a href="https://github.com/jaswantsinghh" target="_blank" rel="me noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/jaswant-singh009" target="_blank" rel="me noopener">LinkedIn</a>
+        <a href="https://x.com/CodeComposer009" target="_blank" rel="me noopener">X</a>
+      </nav>
+      <p class="mono">© <span id="year"></span> Jaswant Singh</p>
+    </div>
+  </footer>
+</main>
+
+<script src="../../js/case.js"></script>
+</body>
+</html>
