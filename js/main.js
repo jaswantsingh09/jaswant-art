@@ -159,6 +159,16 @@
   $("#readerScrim").addEventListener("click", closeReader);
   addEventListener("keydown", (e) => { if (e.key === "Escape") closeReader(); });
 
+  /* ───────────── rows that open a case study: the whole row is the target ───────────── */
+  $$(".row--link").forEach((row) => {
+    const link = row.querySelector(".row__link");
+    row.addEventListener("click", (e) => {
+      if (e.target.closest("a") || getSelection().toString()) return;
+      if (e.metaKey || e.ctrlKey) window.open(link.href, "_blank", "noopener");
+      else location.href = link.href;
+    });
+  });
+
   /* ───────────── copy email ───────────── */
   $$("[data-copy]").forEach((btn) => {
     btn.addEventListener("click", async () => {
