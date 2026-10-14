@@ -25,6 +25,27 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&family=Geist+Mono:wght@400&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="css/style.css" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Jaswant Singh",
+  "url": "https://jaswant.art/",
+  "image": "https://jaswant.art/img/me.png",
+  "jobTitle": "Senior Software Engineer (GenAI / Full-Stack)",
+  "description": "GenAI engineer shipping RAG pipelines, agents and the full-stack products around them. Painter, after hours.",
+  "email": "mailto:jaswantsinghjsn@gmail.com",
+  "worksFor": { "@type": "Organization", "name": "Intelligaia Technologies" },
+  "alumniOf": { "@type": "CollegeOrUniversity", "name": "Guru Nanak Dev Engineering College, Ludhiana" },
+  "address": { "@type": "PostalAddress", "addressLocality": "Mandi", "addressRegion": "Himachal Pradesh", "addressCountry": "IN" },
+  "knowsAbout": ["Generative AI", "Retrieval-augmented generation", "AI agents", "LangChain", "LangGraph", "MLOps", "React", "Next.js", "Node.js", "Python", "FastAPI", "MongoDB", "System design", "Painting"],
+  "sameAs": [
+    "https://github.com/jaswantsinghh",
+    "https://www.linkedin.com/in/jaswant-singh009",
+    "https://x.com/CodeComposer009"
+  ]
+}
+</script>
 </head>
 <body>
 
@@ -38,6 +59,7 @@
     <a href="#writing">Research</a>
     <a href="#studio">Studio</a>
     <a href="#contact">Contact</a>
+    <a href="resume.pdf" class="top__wide" target="_blank" rel="noopener">Résumé</a>
   </nav>
   <span class="top__time mono" id="clock" aria-label="Local time"></span>
 </header>
@@ -296,9 +318,13 @@
   <footer class="contact" id="contact">
     <p class="label">Contact</p>
     <!-- ✏️ EDIT HERE: your real email + links -->
-    <a class="contact__mail" href="mailto:jaswantsinghjsn@gmail.com" data-split>jaswantsinghjsn@gmail.com</a>
+    <div class="contact__mailrow">
+      <a class="contact__mail" href="mailto:jaswantsinghjsn@gmail.com" data-split>jaswantsinghjsn@gmail.com</a>
+      <button class="contact__copy mono" type="button" data-copy="jaswantsinghjsn@gmail.com" aria-live="polite">Copy</button>
+    </div>
     <div class="contact__row">
       <nav class="contact__links" aria-label="Elsewhere">
+        <a href="resume.pdf" target="_blank" rel="noopener">Résumé (PDF)</a>
         <a href="https://github.com/jaswantsinghh" target="_blank" rel="me noopener">GitHub</a>
         <a href="https://www.linkedin.com/in/jaswant-singh009" target="_blank" rel="me noopener">LinkedIn</a>
         <a href="https://x.com/CodeComposer009" target="_blank" rel="me noopener">X</a>

@@ -19,6 +19,8 @@ js/main.js      word reveals, the intro line field, work previews, studio night 
 404.html        not-found page
 CNAME           custom domain for GitHub Pages
 og.png          1200×630 social preview image
+resume.pdf      public résumé (phone number removed)
+img/            memoji and favicons
 ```
 
 ## Editing
@@ -30,7 +32,9 @@ og.png          1200×630 social preview image
 | Essays, research, journal | `js/content.js` (rendered automatically; essays and research open in a side reader) |
 | Paintings | `.plates`: replace each `<div class="plate__ph …">` with `<img src="art/file.jpg" alt="…" />` |
 | Poems and notes | `.poems` and `.notes__list` in `index.html` |
-| Email and links | `.contact` |
+| Email and links | `.contact`. The **Copy** button copies whatever is in its `data-copy` attribute |
+| Résumé | replace `resume.pdf` in the repo root. It's linked from the header and the footer, so keep the phone number out of it |
+| Google profile data | the `application/ld+json` block in `<head>` of `index.html`. Update it when your role or links change |
 | Colours and fonts | CSS variables at the top of `css/style.css` |
 
 ## Motion

@@ -159,6 +159,27 @@
   $("#readerScrim").addEventListener("click", closeReader);
   addEventListener("keydown", (e) => { if (e.key === "Escape") closeReader(); });
 
+  /* ───────────── copy email ───────────── */
+  $$("[data-copy]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const text = btn.dataset.copy;
+      let ok = false;
+      try { await navigator.clipboard.writeText(text); ok = true; }
+      catch (_) {
+        // older browsers / non-secure contexts
+        const ta = Object.assign(document.createElement("textarea"), { value: text });
+        ta.style.cssText = "position:fixed;opacity:0";
+        document.body.appendChild(ta); ta.select();
+        try { ok = document.execCommand("copy"); } catch (_) { ok = false; }
+        ta.remove();
+      }
+      btn.textContent = ok ? "Copied" : "Press ⌘/Ctrl+C";
+      btn.classList.toggle("is-done", ok);
+      clearTimeout(btn._t);
+      btn._t = setTimeout(() => { btn.textContent = "Copy"; btn.classList.remove("is-done"); }, 2000);
+    });
+  });
+
   /* ───────────── studio: lights down ───────────── */
   const studio = $("#studio");
   function nightShift() {

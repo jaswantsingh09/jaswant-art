@@ -88,6 +88,11 @@ img { display: block; max-width: 100%; }
 .top__name { grid-column: 1 / span 3; font-weight: 500; }
 .top__nav { grid-column: 7 / span 4; display: flex; gap: 22px; }
 .top__time { grid-column: 11 / span 2; justify-self: end; color: inherit; opacity: 0.6; }
+/* mid widths: drop the clock and let the nav sit flush right */
+@media (max-width: 1180px) {
+  .top__time { display: none; }
+  .top__nav { grid-column: 4 / -1; justify-self: end; }
+}
 @media (max-width: 760px) {
   .top { grid-template-columns: 1fr auto; }
   .top__name { grid-column: 1; }
@@ -98,6 +103,10 @@ img { display: block; max-width: 100%; }
 }
 @media (max-width: 400px) {
   .top__nav { gap: 11px; font-size: 13px; }
+}
+@media (max-width: 350px) {
+  .top { column-gap: 10px; font-size: 12.5px; }
+  .top__nav { gap: 8px; font-size: 12.5px; }
 }
 
 /* ─────────────────────────── intro ─────────────────────────── */
@@ -368,6 +377,15 @@ img { display: block; max-width: 100%; }
   transition: color 0.35s;
 }
 .contact__mail:hover { color: var(--accent); }
+.contact__mailrow { display: flex; align-items: center; flex-wrap: wrap; gap: 14px 22px; }
+.contact__copy {
+  background: none; color: var(--ink-2); cursor: pointer;
+  border: 1px solid var(--rule); border-radius: 100px;
+  padding: 8px 16px; font-size: 12px;
+  transition: color 0.3s, border-color 0.3s, background-color 0.3s;
+}
+.contact__copy:hover { color: var(--ink); border-color: var(--ink); }
+.contact__copy.is-done { color: var(--paper); background: var(--ink); border-color: var(--ink); }
 .contact__row {
   display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 16px;
   margin-top: clamp(80px, 14vh, 160px);
