@@ -17,7 +17,10 @@
 <meta name="twitter:title" content="Jaswant Singh — GenAI Engineer &amp; Painter" />
 <meta name="twitter:description" content="GenAI engineer shipping RAG pipelines, agents and the full-stack products around them. Painter, after hours." />
 <meta name="twitter:image" content="https://jaswant.art/og.png" />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f3f1ec'/%3E%3Ccircle cx='50' cy='50' r='22' fill='%23d8452b'/%3E%3C/svg%3E" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="/img/icon-192.png" />
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&family=Geist+Mono:wght@400&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet" />
@@ -28,11 +31,11 @@
 <a class="skip" href="#work">Skip to work</a>
 
 <header class="top" id="top">
-  <a class="top__name" href="#">Jaswant Singh</a>
+  <a class="top__name" href="#" aria-label="Jaswant Singh — home"><img class="top__avatar" src="img/avatar.jpg" alt="" width="24" height="24" /><span class="top__label">Jaswant Singh</span></a>
   <nav class="top__nav" aria-label="Primary">
     <a href="#work">Work</a>
     <a href="#experience" class="top__wide">Experience</a>
-    <a href="#writing">Writing</a>
+    <a href="#writing">Research</a>
     <a href="#studio">Studio</a>
     <a href="#contact">Contact</a>
   </nav>
@@ -213,7 +216,7 @@
   <section class="block" id="writing">
     <header class="block__head">
       <span class="block__num mono">04</span>
-      <h2 class="block__title">Writing &amp; research</h2>
+      <h2 class="block__title">Research</h2>
     </header>
     <!-- rendered from js/content.js (blog + research) -->
     <ol class="entries" id="entries"></ol>
@@ -228,7 +231,7 @@
 
     <p class="studio__intro" data-reveal>
       The other half of the work. Paintings that took longer than any migration,
-      poems written between deploys, and notes on what I notice.
+      and notes on what I notice.
     </p>
 
     <!-- ✏️ EDIT HERE: swap each .plate__ph for <img src="art/your-file.jpg" alt="Title" /> -->
@@ -247,8 +250,8 @@
       </figure>
     </div>
 
-    <!-- ✏️ EDIT HERE: poems -->
-    <div class="poems">
+    <!-- ✏️ EDIT HERE: poems — hidden for now; delete the `hidden` attribute to show them -->
+    <div class="poems" hidden>
       <article class="poem" data-reveal>
         <h3>Garbage Collection</h3>
         <p>I keep old griefs in memory<br/>

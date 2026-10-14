@@ -79,9 +79,9 @@
   const C = window.SITE_CONTENT || { research: [], blog: [], journal: [] };
   const entriesEl = $("#entries");
   const items = [
-    ...C.blog.map((b) => ({ kind: "Essay", title: b.title, meta: `${b.date} · ${b.minutes} min`, body: b.body, readerMeta: `Essay — ${b.date}` })),
+    ...C.blog.filter((b) => !b.draft).map((b) => ({ kind: "Essay", title: b.title, meta: `${b.date} · ${b.minutes} min`, body: b.body, readerMeta: `Essay — ${b.date}` })),
     ...C.research.map((r) => ({
-      kind: "Research", title: r.title, body: r.body,
+      kind: C.blog.some((b) => !b.draft) ? "Research" : r.id, title: r.title, body: r.body,
       meta: [r.date, r.status].filter(Boolean).join(" · "),
       readerMeta: ["Research " + r.id, r.date, r.status].filter(Boolean).join(" — "),
     })),
