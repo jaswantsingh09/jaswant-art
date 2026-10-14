@@ -349,6 +349,23 @@
     peek.style.rotate = `${pk.rot.toFixed(2)}deg`;
   }
 
+  /* ───────────── memoji: a small head-turn toward the cursor ───────────── */
+  const me = $("#me");
+  const head = { r: 0, x: 0, y: 0 };
+  function turnHead() {
+    if (!me || !finePointer || !fVisible) return;
+    const b = me.getBoundingClientRect();
+    const cx = b.left + b.width / 2, cy = b.top + b.height / 2;
+    const tr = ptr.sx < -9e3 ? 0 : Math.max(-1, Math.min(1, (lastPX - cx) / 600));
+    const ty = ptr.sy < -9e3 ? 0 : Math.max(-1, Math.min(1, (lastPY - cy) / 600));
+    head.r = lerp(head.r, tr * 9, 0.08);
+    head.x = lerp(head.x, tr * 6, 0.08);
+    head.y = lerp(head.y, ty * 4, 0.08);
+    me.style.transform = `translate(${head.x.toFixed(2)}px, ${head.y.toFixed(2)}px) rotate(${head.r.toFixed(2)}deg)`;
+  }
+  let lastPX = 0, lastPY = 0;
+  addEventListener("pointermove", (e) => { lastPX = e.clientX; lastPY = e.clientY; }, { passive: true });
+
   /* ───────────── loop + resize ───────────── */
   initField();
   let rT;
@@ -360,6 +377,7 @@
     (function loop(t) {
       if (fVisible) drawField(t);
       movePeek();
+      turnHead();
       requestAnimationFrame(loop);
     })(0);
   }
