@@ -20,51 +20,64 @@ window.SITE_CONTENT = {
   research: [
     {
       id: "R-01",
-      title: "Chunking Strategies vs. Retrieval Quality in Production RAG",
-      status: "ongoing",
-      date: "2026",
-      tags: ["rag", "embeddings", "evals"],
+      title: "Context-Window Optimization for Long Conversations",
+      status: "internal",
+      date: "",
+      tags: ["llm", "latency", "context"],
       abstract:
-        "Placeholder — replace with your own research. Comparing fixed-window, semantic and layout-aware chunking across three real document corpora, measured on answer faithfulness rather than retrieval hit-rate alone.",
-      body: `# Chunking Strategies vs. Retrieval Quality
+        "Prompt slicing, dynamic summarization and embedding fallbacks that cut latency 40% and removed context overflow in long-running conversations.",
+      body: `# Context-Window Optimization
 
-*This is a placeholder research note — replace it in js/content.js.*
+Long conversations eventually outgrow the model's context window. The naive fix, truncating the oldest turns, quietly drops the facts users care about most.
 
-## The question
+## Approach
 
-Retrieval hit-rate is the metric everyone reports, but faithfulness of the final answer is what users experience. These two numbers diverge more than expected.
+- **Prompt slicing**: send only the parts of the history that the current turn depends on
+- **Dynamic summarization**: compress older turns into running summaries instead of discarding them
+- **Embedding fallback**: when a detail has been summarized away, retrieve the original turn by similarity
 
-## Setup
+## Result
 
-- Three corpora: contracts, support tickets, engineering wikis
-- Chunkers: fixed 512-token, recursive semantic, layout-aware
-- Judge: LLM-as-judge with a human-verified calibration set
-
-## Early observations
-
-Layout-aware chunking wins on documents with real structure, but the gap closes to nearly zero on conversational data. The interesting result is *why* — see the full write-up when it lands.`,
+Latency fell by **40%**, and context-overflow errors in long conversations went to zero. The strategies were packaged as reusable components for the team.`,
     },
     {
       id: "R-02",
-      title: "Backpressure Patterns for Token-Streaming APIs",
-      status: "published",
-      date: "2025",
-      tags: ["system-design", "streaming", "node"],
+      title: "AIOps: Observability for LLM Pipelines",
+      status: "internal",
+      date: "",
+      tags: ["mlops", "observability", "reliability"],
       abstract:
-        "Placeholder — what happens when an LLM streams tokens faster than a mobile client on 3G can consume them? A tour of buffering, dropping, and adaptive throttling strategies in Node.",
-      body: `# Backpressure Patterns for Token-Streaming APIs
+        "An observability layer for LLM pipelines (automated retries, structured error handling and drift detection) that reduced model failures by 70%.",
+      body: `# AIOps: Observability for LLM Pipelines
 
-*Placeholder research note — replace with your own.*
+LLM pipelines fail in ways ordinary services don't: provider timeouts, malformed structured output, and slow drift in answer quality.
 
-When a model produces tokens at 80/s and the client drains at 15/s, something has to give. This note walks through three strategies and where each breaks.
+## What it does
 
-## The candidates
+- Automated retries with backoff and fallbacks
+- Structured error handling, so failures are classified rather than swallowed
+- Drift detection on outputs, with metrics and alerts
 
-- **Unbounded buffering** — simple, and a memory leak with extra steps
-- **Sentence-level coalescing** — trade latency for stability
-- **Adaptive throttling** — pause generation itself when the socket backs up
+## Result
 
-The third option sounds exotic but pairs beautifully with interruptible inference.`,
+Model failures fell by **70%**.`,
+    },
+    {
+      id: "R-03",
+      title: "An Agentic Assistant Framework on AWS Lambda",
+      status: "internal",
+      date: "",
+      tags: ["agents", "langchain", "aws"],
+      abstract:
+        "A multi-agent LangChain system with persistent memory and tool integration, running serverless with sub-500 ms async streaming and CloudWatch observability.",
+      body: `# An Agentic Assistant Framework
+
+A multi-agent system built on LangChain, designed to run serverless.
+
+- **Memory persistence** across sessions
+- **Tool integration**, so agents act rather than only answer
+- **Async streaming** on AWS Lambda, with first tokens in under 500 ms
+- **CloudWatch** metrics and logs for every agent step`,
     },
   ],
 

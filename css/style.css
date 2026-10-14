@@ -90,7 +90,9 @@ img { display: block; max-width: 100%; }
 @media (max-width: 760px) {
   .top { grid-template-columns: 1fr auto; }
   .top__name { grid-column: 1; }
-  .top__nav { grid-column: 2; gap: 16px; }
+  .top__nav { grid-column: 2; gap: 14px; }
+  .top__wide { display: none; }
+  .top__name { white-space: nowrap; }
   .top__time { display: none; }
 }
 
@@ -202,6 +204,25 @@ img { display: block; max-width: 100%; }
 .peek.is-on { opacity: 1; transform: scale(1); }
 .peek canvas { width: 100%; height: 100%; display: block; }
 @media (hover: none) { .peek { display: none; } }
+
+/* ─────────────────────────── experience ─────────────────────────── */
+.cv { border-bottom: 1px solid var(--rule); }
+.cv__item {
+  display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--gap);
+  align-items: baseline;
+  padding: 22px 0 24px; border-top: 1px solid var(--rule);
+}
+.cv__item:first-child { border-top: none; }
+.cv__when { grid-column: 1 / span 2; color: var(--ink-3); }
+.cv__what { grid-column: 3 / span 4; }
+.cv__what h3 { font-size: clamp(18px, 1.6vw, 22px); font-weight: 400; letter-spacing: -0.015em; line-height: 1.2; }
+.cv__org { color: var(--ink-3); font-size: 15px; margin-top: 2px; }
+.cv__note { grid-column: 8 / span 5; color: var(--ink-2); font-size: 15px; max-width: 46ch; }
+@media (max-width: 900px) {
+  .cv__when { grid-column: 1 / -1; margin-bottom: 6px; }
+  .cv__what, .cv__note { grid-column: 1 / -1; }
+  .cv__note { margin-top: 10px; }
+}
 
 /* ─────────────────────────── practice ─────────────────────────── */
 .practice { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: var(--gap); }
