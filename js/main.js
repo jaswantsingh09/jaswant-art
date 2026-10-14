@@ -14,8 +14,13 @@
   // progress of p within [a,b] clamped 0..1
   const seg = (p, a, b) => clamp((p - a) / (b - a), 0, 1);
 
-  const PHOSPHOR = "#a3ff6b";
-  const SIGNAL = "#5bd7ff";
+  // accent colours are mutable — js/play.js can retheme the site live
+  let PHOSPHOR = "#a3ff6b";
+  let SIGNAL = "#5bd7ff";
+  const rgba = (hex, a) => {
+    const n = parseInt(hex.slice(1), 16);
+    return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`;
+  };
   const AMBER = "#ffc857";
   const DIM = "#8fa3a0";
 
@@ -52,9 +57,10 @@
   const ring = document.getElementById("cursorRing");
   let cx = -100, cy = -100, rx = -100, ry = -100;
   window.addEventListener("pointermove", (e) => { cx = e.clientX; cy = e.clientY; }, { passive: true });
-  document.querySelectorAll("a, button, [data-hover]").forEach((el) => {
-    el.addEventListener("pointerenter", () => ring.classList.add("is-hover"));
-    el.addEventListener("pointerleave", () => ring.classList.remove("is-hover"));
+  // delegated, so elements rendered later (posts, papers, terminal) also get the hover ring
+  const HOVERABLE = "a, button, [data-hover]";
+  document.addEventListener("pointerover", (e) => {
+    ring.classList.toggle("is-hover", !!(e.target.closest && e.target.closest(HOVERABLE)));
   });
   (function cursorLoop() {
     rx = lerp(rx, cx, 0.16);
@@ -136,7 +142,7 @@
       vx: (Math.random() - 0.5) * 0.35,
       vy: (Math.random() - 0.5) * 0.35,
       r: 1 + Math.random() * 1.8,
-      hue: Math.random() < 0.75 ? PHOSPHOR : SIGNAL,
+      sig: Math.random() >= 0.75,
       pulse: Math.random() * Math.PI * 2,
     }));
   }
@@ -144,6 +150,24 @@
     const r = heroCanvas.getBoundingClientRect();
     mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top;
   }, { passive: true });
+
+  // click the void → a shockwave ripples through the network
+  const shocks = [];
+  document.getElementById("hero").addEventListener("pointerdown", (e) => {
+    if (e.target.closest("a, button")) return;
+    const r = heroCanvas.getBoundingClientRect();
+    const sx = e.clientX - r.left, sy = e.clientY - r.top;
+    shocks.push({ x: sx, y: sy, t0: performance.now() });
+    for (const p of particles) {
+      const dx = p.x - sx, dy = p.y - sy;
+      const d = Math.hypot(dx, dy) || 1;
+      if (d < 320) {
+        const f = (1 - d / 320) * 7;
+        p.vx += (dx / d) * f; p.vy += (dy / d) * f;
+        p.flash = 1;
+      }
+    }
+  });
 
   function drawHero(t) {
     if (!heroCtx) return;
@@ -160,7 +184,10 @@
         p.vx += (dx / d) * 0.012;
         p.vy += (dy / d) * 0.012;
       }
-      p.vx = clamp(p.vx, -0.6, 0.6); p.vy = clamp(p.vy, -0.6, 0.6);
+      // shockwaves can exceed cruising speed; friction brings them back down
+      const sp = Math.hypot(p.vx, p.vy);
+      if (sp > 0.6) { p.vx *= 0.94; p.vy *= 0.94; }
+      if (p.flash) p.flash = Math.max(0, p.flash - 0.015);
       if (p.x < -20) p.x = heroW + 20; if (p.x > heroW + 20) p.x = -20;
       if (p.y < -20) p.y = heroH + 20; if (p.y > heroH + 20) p.y = -20;
     }
@@ -174,7 +201,7 @@
         const d = Math.hypot(dx, dy);
         if (d < LINK) {
           const o = (1 - d / LINK) * 0.35;
-          ctx.strokeStyle = `rgba(140, 200, 170, ${o})`;
+          ctx.strokeStyle = (a.flash || b.flash) ? rgba(PHOSPHOR, o + Math.max(a.flash || 0, b.flash || 0) * 0.5) : `rgba(140, 200, 170, ${o})`;
           ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
         }
       }
@@ -182,10 +209,21 @@
     // occasional "signal" firing along a random link
     for (const p of particles) {
       const glow = 0.55 + 0.45 * Math.sin(t / 600 + p.pulse);
-      ctx.fillStyle = p.hue;
+      ctx.fillStyle = p.sig ? SIGNAL : PHOSPHOR;
       ctx.globalAlpha = 0.35 + glow * 0.55;
-      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r + (p.flash || 0) * 2.5, 0, Math.PI * 2); ctx.fill();
       ctx.globalAlpha = 1;
+    }
+    // expanding pulse rings
+    for (let i = shocks.length - 1; i >= 0; i--) {
+      const s = shocks[i];
+      const k = (performance.now() - s.t0) / 1100;
+      if (k >= 1) { shocks.splice(i, 1); continue; }
+      ctx.strokeStyle = rgba(PHOSPHOR, (1 - k) * 0.7);
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(s.x, s.y, easeOut(k) * 320, 0, Math.PI * 2); ctx.stroke();
+      ctx.strokeStyle = rgba(SIGNAL, (1 - k) * 0.4);
+      ctx.beginPath(); ctx.arc(s.x, s.y, easeOut(k) * 200, 0, Math.PI * 2); ctx.stroke();
     }
   }
 
@@ -267,7 +305,7 @@
       ctx.globalAlpha = alpha;
       ctx.strokeStyle = PHOSPHOR;
       ctx.lineWidth = 1.2;
-      ctx.fillStyle = "rgba(163,255,107,0.07)";
+      ctx.fillStyle = rgba(PHOSPHOR, 0.07);
       roundRect(ctx, x - tw / 2 - padX, y - chipH / 2, tw + padX * 2, chipH, 7);
       ctx.fill(); ctx.stroke();
       ctx.fillStyle = "#e8f0ee";
@@ -396,16 +434,12 @@
       const el = document.createElementNS("http://www.w3.org/2000/svg", "rect");
       el.setAttribute("width", 10); el.setAttribute("height", 10);
       el.setAttribute("rx", 2);
-      el.setAttribute("fill", PHOSPHOR);
-      el.setAttribute("class", "packet");
-      el.style.color = PHOSPHOR;
+      el.setAttribute("class", "packet packet--req");
       packetsG.appendChild(el);
       packetDefs.push({ el, wire, dir: 1, phase: wi * 0.18 + k * 0.5, wi });
       const el2 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
       el2.setAttribute("r", 5.5);
-      el2.setAttribute("fill", SIGNAL);
-      el2.setAttribute("class", "packet");
-      el2.style.color = SIGNAL;
+      el2.setAttribute("class", "packet packet--res");
       packetsG.appendChild(el2);
       packetDefs.push({ el: el2, wire, dir: -1, phase: wi * 0.18 + k * 0.5 + 0.28, wi });
     }
@@ -511,7 +545,7 @@
     ctx.clearRect(0, 0, footW, footH);
     for (let line = 0; line < 3; line++) {
       ctx.beginPath();
-      ctx.strokeStyle = line === 0 ? "rgba(163,255,107,0.18)" : line === 1 ? "rgba(91,215,255,0.12)" : "rgba(255,200,87,0.08)";
+      ctx.strokeStyle = line === 0 ? rgba(PHOSPHOR, 0.18) : line === 1 ? rgba(SIGNAL, 0.12) : "rgba(255,200,87,0.08)";
       ctx.lineWidth = 1.2;
       const yBase = footH * (0.55 + line * 0.12);
       for (let x = 0; x <= footW; x += 6) {
@@ -654,6 +688,11 @@
   /* ════════════════════════════════════════════════
      master loop + resize
   ════════════════════════════════════════════════ */
+  window.addEventListener("accentchange", (e) => {
+    PHOSPHOR = e.detail.phosphor;
+    SIGNAL = e.detail.signal;
+  });
+
   function initAll() { initHero(); initPipe(); initFoot(); }
   initAll();
   let resizeT;

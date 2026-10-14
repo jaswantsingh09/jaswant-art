@@ -5,6 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Jaswant — Engineer of Systems, Student of Art</title>
 <meta name="description" content="Jaswant — Senior Software Engineer. LLM systems, MERN, system design. Also: poems, paintings, observations." />
+<meta name="theme-color" content="#06080b" />
+<link rel="canonical" href="https://jaswant.art/" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://jaswant.art/" />
+<meta property="og:title" content="Jaswant — Engineer of Systems, Student of Art" />
+<meta property="og:description" content="LLM systems, MERN products and architectures that survive traffic — with a sketchbook never far from the keyboard." />
+<meta property="og:image" content="https://jaswant.art/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Jaswant — Engineer of Systems, Student of Art" />
+<meta name="twitter:description" content="LLM systems, MERN products and architectures that survive traffic — with a sketchbook never far from the keyboard." />
+<meta name="twitter:image" content="https://jaswant.art/og.png" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2306080b'/%3E%3Ctext x='50' y='68' font-size='52' font-family='monospace' font-weight='bold' text-anchor='middle' fill='%23a3ff6b'%3EJ·%3C/text%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -12,14 +23,52 @@
 <link href="https://api.fontshare.com/v2/css?f[]=clash-display@500,600,700&f[]=general-sans@400,500,600&display=swap" rel="stylesheet" />
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="css/style.css" />
+<link rel="stylesheet" href="css/play.css" />
 </head>
-<body data-theme="machine">
+<body data-theme="machine" class="is-loading">
+
+<!-- ██ preloader ██ -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader__panel loader__panel--top"></div>
+  <div class="loader__panel loader__panel--bottom"></div>
+  <div class="loader__center">
+    <p class="loader__name" id="loaderName">JASWANT</p>
+    <div class="loader__bar"><span id="loaderBar"></span></div>
+    <p class="loader__log mono" id="loaderLog">allocating imagination…</p>
+  </div>
+  <p class="loader__count mono" id="loaderCount">000</p>
+</div>
+
+<canvas class="trail" id="trailCanvas" aria-hidden="true"></canvas>
 
 <!-- ██ progress bar + cursor + grain ██ -->
 <div class="scroll-progress" aria-hidden="true"><span id="scrollBar"></span></div>
 <div class="cursor" id="cursor" aria-hidden="true"></div>
 <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
 <div class="grain" aria-hidden="true"></div>
+
+<!-- ██ section HUD (filled by js/play.js) ██ -->
+<nav class="hud" id="hud" aria-label="Section navigator"></nav>
+
+<!-- ██ toast ██ -->
+<div class="toast mono" id="toast" role="status" aria-live="polite"></div>
+
+<!-- ██ terminal (press ~ or click the >_ button) ██ -->
+<button class="term-fab mono" id="termFab" aria-label="Open terminal" data-hover>
+  <span class="term-fab__prompt">&gt;_</span><span class="term-fab__hint">press ~</span>
+</button>
+<div class="term" id="term" role="dialog" aria-label="Interactive terminal" aria-hidden="true">
+  <div class="term__bar" id="termBar">
+    <span class="term__dots"><i></i><i></i><i></i></span>
+    <span class="term__title mono">guest@jaswant.art: ~</span>
+    <button class="term__close mono" id="termClose" aria-label="Close terminal">✕</button>
+  </div>
+  <div class="term__out mono" id="termOut"></div>
+  <form class="term__form mono" id="termForm" autocomplete="off">
+    <label for="termIn" class="term__ps">guest@jaswant.art<b>:~$</b></label>
+    <input id="termIn" class="term__in" spellcheck="false" autocapitalize="off" />
+  </form>
+</div>
 
 <!-- ██ NAV ██ -->
 <header class="nav" id="nav">
@@ -77,7 +126,7 @@
       <h1 class="hero__title">
         <span class="hero__row"><span class="hero__word" data-reveal>JASWANT</span></span>
         <span class="hero__row hero__row--outline"><span class="hero__word" data-reveal>BUILDS</span></span>
-        <span class="hero__row"><span class="hero__word" data-reveal>THINKING</span>&nbsp;<span class="hero__word hero__word--italic" data-reveal>machines</span></span>
+        <span class="hero__row"><span class="hero__word" data-reveal>THINKING</span>&nbsp;<span class="hero__word hero__word--italic" id="heroRotate" data-reveal>machines</span></span>
       </h1>
       <div class="hero__sub">
         <p class="hero__desc" data-reveal>
@@ -93,7 +142,7 @@
       </div>
     </div>
     <div class="hero__scrollcue mono" aria-hidden="true">
-      <span>scroll to run inference</span>
+      <span>scroll to run inference · click the void to send a pulse</span>
       <span class="hero__scrollcue-line"></span>
     </div>
   </section>
@@ -373,6 +422,31 @@
         </div>
       </div>
 
+      <!-- ── interactive canvas ─────────────────────────────────── -->
+      <div class="studio__section" id="paint">
+        <h3 class="studio__label">⟡ Leave a mark</h3>
+        <p class="paint__hint">An open canvas. Drag to paint — or let the machine paint for you.</p>
+        <div class="paint" data-reveal>
+          <div class="paint__toolbar">
+            <div class="paint__swatches" id="paintSwatches" role="radiogroup" aria-label="Paint colour"></div>
+            <div class="paint__brushes" role="radiogroup" aria-label="Brush">
+              <button class="paint__brush is-on" data-brush="bristle" data-hover>bristle</button>
+              <button class="paint__brush" data-brush="ink" data-hover>ink</button>
+              <button class="paint__brush" data-brush="spray" data-hover>mist</button>
+            </div>
+            <div class="paint__actions">
+              <button class="paint__btn" id="paintAuto" data-hover>✦ let it paint</button>
+              <button class="paint__btn" id="paintClear" data-hover>wash</button>
+              <button class="paint__btn" id="paintSave" data-hover>save ↓</button>
+            </div>
+          </div>
+          <div class="paint__stage">
+            <canvas id="paintCanvas" aria-label="Interactive painting canvas"></canvas>
+            <p class="paint__empty" id="paintEmpty">drag here ✎</p>
+          </div>
+        </div>
+      </div>
+
       <!-- ── observations ──────────────────────────────────────── -->
       <div class="studio__section">
         <h3 class="studio__label">⟡ Observations</h3>
@@ -406,6 +480,7 @@
         <a href="#" data-hover>linkedin ↗</a>
         <a href="#" data-hover>x / twitter ↗</a>
       </div>
+      <p class="contact__clock mono" id="clock" aria-live="off"></p>
       <p class="contact__foot mono">© <span id="year"></span> jaswant · engineered by day, painted by night · exit code 0</p>
     </div>
   </footer>
@@ -414,5 +489,6 @@
 
 <script src="js/content.js"></script>
 <script src="js/main.js"></script>
+<script src="js/play.js"></script>
 </body>
 </html>
