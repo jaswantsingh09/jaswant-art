@@ -3,19 +3,19 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Jaswant Singh — Software Engineer &amp; Painter</title>
-<meta name="description" content="Jaswant Singh is a software engineer building language-model systems and web products — and a painter, after hours." />
+<title>Jaswant Singh — GenAI Engineer &amp; Painter</title>
+<meta name="description" content="Jaswant Singh is a GenAI engineer with 4+ years shipping production RAG pipelines, agentic workflows and the full-stack products around them — and a painter, after hours." />
 <meta name="theme-color" content="#f3f1ec" />
 <link rel="canonical" href="https://jaswant.art/" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://jaswant.art/" />
-<meta property="og:title" content="Jaswant Singh — Software Engineer &amp; Painter" />
-<meta property="og:description" content="Language-model systems, web products and architecture — and paintings, after hours." />
+<meta property="og:title" content="Jaswant Singh — GenAI Engineer &amp; Painter" />
+<meta property="og:description" content="GenAI engineer shipping RAG pipelines, agents and the full-stack products around them. Painter, after hours." />
 <meta property="og:image" content="https://jaswant.art/og.png" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:creator" content="@CodeComposer009" />
-<meta name="twitter:title" content="Jaswant Singh — Software Engineer &amp; Painter" />
-<meta name="twitter:description" content="Language-model systems, web products and architecture — and paintings, after hours." />
+<meta name="twitter:title" content="Jaswant Singh — GenAI Engineer &amp; Painter" />
+<meta name="twitter:description" content="GenAI engineer shipping RAG pipelines, agents and the full-stack products around them. Painter, after hours." />
 <meta name="twitter:image" content="https://jaswant.art/og.png" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f3f1ec'/%3E%3Ccircle cx='50' cy='50' r='22' fill='%23d8452b'/%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -31,6 +31,7 @@
   <a class="top__name" href="#">Jaswant Singh</a>
   <nav class="top__nav" aria-label="Primary">
     <a href="#work">Work</a>
+    <a href="#experience" class="top__wide">Experience</a>
     <a href="#writing">Writing</a>
     <a href="#studio">Studio</a>
     <a href="#contact">Contact</a>
@@ -43,14 +44,14 @@
   <!-- ─────────────────────────── INTRO ─────────────────────────── -->
   <section class="intro" aria-label="Introduction">
     <h1 class="intro__lede" data-split>
-      Software engineer building language&#8209;model systems and products for the web.
+      GenAI engineer shipping RAG pipelines, agents and the full&#8209;stack products around them.
       <span class="soft">Painter, after hours.</span>
     </h1>
 
     <dl class="intro__meta">
-      <div><dt>Currently</dt><dd>Senior Software Engineer</dd></div>
-      <div><dt>Focus</dt><dd>LLM systems, MERN, system design</dd></div>
-      <div><dt>Also</dt><dd>Poems, paintings, small observations</dd></div>
+      <div><dt>Currently</dt><dd>Senior Software Engineer, Intelligaia</dd></div>
+      <div><dt>Focus</dt><dd>GenAI, MLOps, full-stack (MERN)</dd></div>
+      <div><dt>Based in</dt><dd>Mandi, India</dd></div>
     </dl>
 
     <canvas class="intro__field" id="field" aria-hidden="true"></canvas>
@@ -67,71 +68,141 @@
     <ol class="rows" id="workRows">
       <li class="row" data-seed="3" data-reveal>
         <span class="row__idx mono">01</span>
-        <h3 class="row__title">Conversational RAG platform</h3>
-        <p class="row__desc">Retrieval over messy enterprise documents — hybrid search, reranking, a streaming interface, and answers that cite their sources.</p>
-        <span class="row__tags mono">LLM · Vector search · React</span>
+        <h3 class="row__title">AuctionWire</h3>
+        <p class="row__desc">Graded trading-card auction platform. A FastAPI OCR service reads slab-certificate numbers across 7 auction houses; a QLoRA-tuned Qwen vision model lifted accuracy from 85% to 98%, replacing a paid OCR provider.</p>
+        <span class="row__tags mono">Next.js · FastAPI · VLM</span>
       </li>
       <li class="row" data-seed="11" data-reveal>
         <span class="row__idx mono">02</span>
-        <h3 class="row__title">Realtime collaboration engine</h3>
-        <p class="row__desc">WebSocket sync, presence and offline queueing on a MERN stack. Built to feel instant on bad hotel wifi.</p>
-        <span class="row__tags mono">Node · WebSocket · MongoDB</span>
+        <h3 class="row__title">Cisco Outshift — Internet of Cognition</h3>
+        <p class="row__desc">Proof of concept that turns a plain-language problem statement into a live multi-agent “cognitive fabric”: GPT-4o generates the agents, their staged reasoning and the graph that connects them.</p>
+        <span class="row__tags mono">Multi-agent · GPT-4o</span>
       </li>
       <li class="row" data-seed="27" data-reveal>
         <span class="row__idx mono">03</span>
-        <h3 class="row__title">Agentic operations copilot</h3>
-        <p class="row__desc">Tool-using agents that triage incidents, draft runbooks, and know when to page a human instead of guessing.</p>
-        <span class="row__tags mono">Agents · Tooling · Evals</span>
+        <h3 class="row__title">Bhutan Smart Driving Test</h3>
+        <p class="row__desc">Real-time computer vision for a government driving test. Scores the parking box from live cameras, timing each run and counting every tyre touch on the boundary.</p>
+        <span class="row__tags mono">YOLO11 · SAM · FastAPI</span>
       </li>
       <li class="row" data-seed="42" data-reveal>
         <span class="row__idx mono">04</span>
-        <h3 class="row__title">Design system as code</h3>
-        <p class="row__desc">A token pipeline and component library shared across products — where engineering and visual craft meet.</p>
-        <span class="row__tags mono">React · Tokens · Accessibility</span>
+        <h3 class="row__title">PChat — PHI/PII privacy layer</h3>
+        <p class="row__desc">A compliance assistant that validates documents against regulatory parameters, saving the client three full-time roles (~US$100K a year), with PHI/PII exposure cut by over 90%.</p>
+        <span class="row__tags mono">OpenAI · Kafka · Redis</span>
+      </li>
+      <li class="row" data-seed="8" data-reveal>
+        <span class="row__idx mono">05</span>
+        <h3 class="row__title">ComplyWise</h3>
+        <p class="row__desc">Finds and remediates vulnerabilities across GitHub repos and AWS workflows. Manual compliance checks down 80%; a custom RAG store made retrieval 50% faster at a tenth of the cost.</p>
+        <span class="row__tags mono">RAG · AWS · Voice agent</span>
+      </li>
+      <li class="row" data-seed="15" data-reveal>
+        <span class="row__idx mono">06</span>
+        <h3 class="row__title">Saransh</h3>
+        <p class="row__desc">A self-hosted meeting agent: joins Google Meet through Playwright, transcribes locally with faster-whisper, writes a structured summary. No SaaS dependencies.</p>
+        <span class="row__tags mono">Playwright · Whisper · Docker</span>
+      </li>
+      <li class="row" data-seed="33" data-reveal>
+        <span class="row__idx mono">07</span>
+        <h3 class="row__title">Nucleux</h3>
+        <p class="row__desc">An agentic-AI React component library — composable, accessible building blocks for chat and agent interfaces, shipped as tree-shakeable packages.</p>
+        <span class="row__tags mono">React · Tailwind · a11y</span>
       </li>
     </ol>
 
     <div class="peek" id="peek" aria-hidden="true"><canvas id="peekCanvas"></canvas></div>
   </section>
 
+  <!-- ─────────────────────────── EXPERIENCE ─────────────────────────── -->
+  <section class="block" id="experience">
+    <header class="block__head">
+      <span class="block__num mono">02</span>
+      <h2 class="block__title">Experience</h2>
+    </header>
+
+    <ol class="cv">
+      <li class="cv__item" data-reveal>
+        <span class="cv__when mono">2025 — Now</span>
+        <div class="cv__what">
+          <h3>Senior Software Engineer, Full-Stack / AI</h3>
+          <p class="cv__org">Intelligaia Technologies</p>
+        </div>
+        <p class="cv__note">Production AI tools for enterprise clients including Cisco and Palo Alto Networks — end-to-end delivery with CI/CD, testing and observability. Workflow efficiency up 30%+.</p>
+      </li>
+      <li class="cv__item" data-reveal>
+        <span class="cv__when mono">2023 — 2025</span>
+        <div class="cv__what">
+          <h3>GenAI / Full-Stack Developer</h3>
+          <p class="cv__org">Superfine Cyber Security</p>
+        </div>
+        <p class="cv__note">Led GenAI and full-stack development of compliance and healthcare SaaS on GCP and AWS — PChat, ComplyWise, DentalBuddy.</p>
+      </li>
+      <li class="cv__item" data-reveal>
+        <span class="cv__when mono">2021 — 2023</span>
+        <div class="cv__what">
+          <h3>Full-Stack Developer</h3>
+          <p class="cv__org">Ryaz.io</p>
+        </div>
+        <p class="cv__note">Rebuilt a teaching platform: page loads from 3.2s to 1.1s, accessibility score 78 → 95. Shipped a streaming GenAI chatbot and moved the app to React Native.</p>
+      </li>
+      <li class="cv__item" data-reveal>
+        <span class="cv__when mono">2020 — 2021</span>
+        <div class="cv__what">
+          <h3>Web Developer</h3>
+          <p class="cv__org">Freelance</p>
+        </div>
+        <p class="cv__note">Marketing sites and a custom Shopify storefront for early clients, plus an audit-automation portal.</p>
+      </li>
+      <li class="cv__item" data-reveal>
+        <span class="cv__when mono">2019 — 2023</span>
+        <div class="cv__what">
+          <h3>B.Tech, Computer Science</h3>
+          <p class="cv__org">Guru Nanak Dev Engineering College, Ludhiana</p>
+        </div>
+        <p class="cv__note">CGPA 8.8 / 10.</p>
+      </li>
+    </ol>
+  </section>
+
   <!-- ─────────────────────────── PRACTICE ─────────────────────────── -->
   <section class="block" id="practice">
     <header class="block__head">
-      <span class="block__num mono">02</span>
+      <span class="block__num mono">03</span>
       <h2 class="block__title">Practice</h2>
     </header>
 
     <div class="practice">
       <p class="practice__statement" data-reveal>
-        I like systems that are quiet in production. Most of my work sits where a language model meets
-        a real product — retrieval, evaluation, latency, cost — and the architecture underneath that keeps it honest.
+        Four years of putting language models into production — and owning everything around them,
+        from the pipeline and the evals to the interface someone actually uses. I like the boring parts:
+        retries, observability, cost ceilings. They decide whether the clever part survives.
       </p>
       <div class="practice__cols">
         <div data-reveal>
-          <h3 class="label">Language models</h3>
+          <h3 class="label">GenAI</h3>
           <ul>
-            <li>Retrieval-augmented generation</li>
+            <li>RAG, LangChain, LangGraph</li>
             <li>Agents and tool use</li>
-            <li>Prompt design and evaluation</li>
-            <li>Inference cost and latency</li>
+            <li>Fine-tuning (QLoRA), vision models</li>
+            <li>Pinecone, ChromaDB, FAISS</li>
+          </ul>
+        </div>
+        <div data-reveal>
+          <h3 class="label">MLOps &amp; cloud</h3>
+          <ul>
+            <li>AWS Bedrock, SageMaker, Lambda</li>
+            <li>GCP Vertex AI, Azure OpenAI</li>
+            <li>Docker, Kubernetes, CI/CD</li>
+            <li>Observability and drift detection</li>
           </ul>
         </div>
         <div data-reveal>
           <h3 class="label">Product engineering</h3>
           <ul>
-            <li>React and TypeScript</li>
-            <li>Node and Express APIs</li>
-            <li>MongoDB data modelling</li>
-            <li>Interfaces with motion and care</li>
-          </ul>
-        </div>
-        <div data-reveal>
-          <h3 class="label">Systems</h3>
-          <ul>
-            <li>Caching, queues, sharding</li>
-            <li>Observability and failure modes</li>
-            <li>API design and versioning</li>
-            <li>Back-of-the-envelope maths</li>
+            <li>React, Next.js, React Native</li>
+            <li>Node, Express, FastAPI, Django</li>
+            <li>MongoDB, Kafka, Redis</li>
+            <li>TypeScript and Python</li>
           </ul>
         </div>
       </div>
@@ -141,7 +212,7 @@
   <!-- ─────────────────────────── WRITING ─────────────────────────── -->
   <section class="block" id="writing">
     <header class="block__head">
-      <span class="block__num mono">03</span>
+      <span class="block__num mono">04</span>
       <h2 class="block__title">Writing &amp; research</h2>
     </header>
     <!-- rendered from js/content.js (blog + research) -->
@@ -151,7 +222,7 @@
   <!-- ─────────────────────────── STUDIO ─────────────────────────── -->
   <section class="studio" id="studio">
     <header class="block__head">
-      <span class="block__num mono">04</span>
+      <span class="block__num mono">05</span>
       <h2 class="block__title">Studio</h2>
     </header>
 

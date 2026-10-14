@@ -80,7 +80,11 @@
   const entriesEl = $("#entries");
   const items = [
     ...C.blog.map((b) => ({ kind: "Essay", title: b.title, meta: `${b.date} · ${b.minutes} min`, body: b.body, readerMeta: `Essay — ${b.date}` })),
-    ...C.research.map((r) => ({ kind: "Research", title: r.title, meta: `${r.date} · ${r.status}`, body: r.body, readerMeta: `Research ${r.id} — ${r.date} — ${r.status}` })),
+    ...C.research.map((r) => ({
+      kind: "Research", title: r.title, body: r.body,
+      meta: [r.date, r.status].filter(Boolean).join(" · "),
+      readerMeta: ["Research " + r.id, r.date, r.status].filter(Boolean).join(" — "),
+    })),
   ];
   items.forEach((it) => {
     const li = document.createElement("li");
