@@ -1,8 +1,9 @@
-# jaswant.art — personal site
+# jaswant.art
 
-Animated portfolio: 80% tech (LLM · MERN · system design), 20% art (poems · paintings · observations).
+Personal site of Jaswant Singh: software engineer and painter.
 
-No build step. Open `index.html` in a browser, or serve it:
+Paper, ink and one red, set on a 12-column grid. Static HTML/CSS/JS with no build step.
+Open `index.html` in a browser, or serve the folder:
 
 ```
 npx serve .
@@ -11,62 +12,37 @@ npx serve .
 ## Structure
 
 ```
-index.html      — everything lives here (all sections)
-css/style.css   — design tokens + all styling
-js/content.js   — ✏️ YOUR WRITING: blog posts, research notes, journal entries
-js/main.js      — canvas scenes + scroll engine + content rendering
-js/play.js      — interaction layer: preloader, terminal, paint studio, themes, trail, HUD
-css/play.css    — styles for the interaction layer
-404.html        — custom "token not in vocabulary" page
-CNAME           — custom domain for GitHub Pages (jaswant.art)
-og.png          — 1200×630 social preview image
-art/            — put your painting images here
+index.html      all sections (intro, work, practice, writing, studio, contact)
+css/style.css   design tokens at the top, then one block per section
+js/content.js   ✏️ your writing: essays, research notes, journal entries
+js/main.js      word reveals, the intro line field, work previews, studio night shift, reader
+404.html        not-found page
+CNAME           custom domain for GitHub Pages
+og.png          1200×630 social preview image
 ```
 
-## Adding a blog post / research note / journal entry
-
-Open `js/content.js` and add an object to the matching array — that's it, no build step.
-Post bodies support lightweight markdown (`#` headings, `**bold**`, `*italic*`,
-`` `code` ``, fenced code blocks, `-` lists, links). Posts open in a slide-in reader.
-
-## Where to edit the rest (search for "✏️ EDIT HERE" in index.html)
+## Editing
 
 | What | Where |
 |---|---|
-| Name / tagline / hero text | `.hero__title`, `.hero__desc` |
-| Projects | `.work__grid` — one `<article class="card">` per project |
-| Blog / research / journal | `js/content.js` |
-| Poems | `.poems` — one `<article class="poem">` per poem |
-| Paintings | `.gallery` — replace `<div class="frame__ph …">` with `<img src="art/your-file.jpg" alt="…" />` |
-| Observations | `.obs-list` — one `<blockquote class="obs">` per note |
-| Email / socials | `.contact__links` |
+| Intro sentence and the "Currently / Focus / Also" row | `.intro` in `index.html` |
+| Projects | `#workRows`: one `<li class="row">` per project. `data-seed` picks the hover drawing |
+| Essays, research, journal | `js/content.js` (rendered automatically; essays and research open in a side reader) |
+| Paintings | `.plates`: replace each `<div class="plate__ph …">` with `<img src="art/file.jpg" alt="…" />` |
+| Poems and notes | `.poems` and `.notes__list` in `index.html` |
+| Email and links | `.contact` |
+| Colours and fonts | CSS variables at the top of `css/style.css` |
 
-## The big animations
+## Motion
 
-- **Hero** — interactive neural particle field (follows your cursor)
-- **01 · Inference** — sticky section; scrolling drives tokenize → embed → attend → generate
-- **02 · MERN** — live request/response packets flowing through React → Express → Node → Mongo
-- **03 · Blueprint** — a distributed-system diagram that draws itself as you scroll
+The motion is kept small on purpose:
 
-Colors, fonts and spacing are all CSS variables at the top of `style.css`.
+- **Intro**: a field of plotter-style ridgelines that drifts slowly. The cursor raises a soft hill, and the ridge nearest the cursor turns red.
+- **Work**: hovering a project dims the others, and a small generative drawing follows the cursor.
+- **Headings** rise word by word, and content fades in as you scroll.
+- **Studio**: the page darkens while you are in it.
 
-## The interactive layer (js/play.js)
-
-- **Preloader**: the name decodes letter by letter, then a curtain splits open
-- **Hero**: letters move away from your cursor, the last word keeps rotating (machines → systems → poems → …), and a click sends a pulse through the network
-- **Terminal**: press `~` or click `>_`. Try `help`, `neofetch`, `theme cyber`, `blog`, `read 1`, `paint`, `matrix`, `sudo hire jaswant`
-- **Accent themes**: `phosphor · cyber · ember · ice · mono`. The whole site recolours live and the choice is remembered
-- **Paint studio** (“Leave a mark”): bristle, ink and mist brushes, six pigments, “let it paint” (a generative flow-field painter), wash, and save as PNG
-- **Cursor trail**: phosphor sparks in the tech world, ink drops in the studio
-- **Section HUD**: dots on the right edge; the marquee speeds up and skews with your scroll speed
-- **Scramble text** on section titles and nav links; poems bleed in line by line; paintings tilt toward the cursor and catch a glare
-- **Footer clock**: Jaswant's local time (IST) and what Jaswant is “probably” doing
-- **Konami code** ↑↑↓↓←→←→BA
-
-Everything respects `prefers-reduced-motion`.
-
-To add terminal commands, extend the `COMMANDS` object in `js/play.js`.
-To change the rotating hero words, edit `ROTATE_WORDS`.
+All of it is switched off when the visitor's device asks for reduced motion.
 
 ## Deploying to jaswant.art
 
@@ -78,5 +54,16 @@ This is a static site with no build step, so any static host works.
    - `A` records for `@` → `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
    - `CNAME` record for `www` → `jaswantsingh09.github.io`
 3. Once the certificate is issued, tick **Enforce HTTPS**.
+
+**DNS on GoDaddy**
+1. GoDaddy → *My Products* → *Domains* → `jaswant.art` → **DNS** → *DNS Records*.
+2. Delete the default `A @ → Parked` record. Under the *Forwarding* tab, remove any forwarding.
+3. Add four `A` records, all with **Name** `@` and the default TTL:
+   `185.199.108.153` · `185.199.109.153` · `185.199.110.153` · `185.199.111.153`
+4. Edit the existing `CNAME www` record (it points to `@` by default) so it points to `jaswantsingh09.github.io`.
+5. Optional, for IPv6: add four `AAAA` records for `@`:
+   `2606:50c0:8000::153` · `2606:50c0:8001::153` · `2606:50c0:8002::153` · `2606:50c0:8003::153`
+6. Recommended: verify the domain in GitHub → *Settings* (your account) → *Pages* → *Add a domain*. GitHub gives you a `TXT` record to add at GoDaddy, and it stops anyone else from claiming the domain.
+7. Check propagation with `dig jaswant.art +short`. It should list the four `185.199.x.153` addresses. That usually takes minutes, but can take up to 48 hours.
 
 **Netlify / Vercel / Cloudflare Pages**: import the repo, leave the build command empty and set the output directory to `/`. Then add `jaswant.art` as a custom domain and follow their DNS instructions. You can delete `CNAME` there.

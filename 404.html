@@ -3,63 +3,32 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>404 — token not in vocabulary · jaswant</title>
+<title>Not found — Jaswant Singh</title>
 <meta name="robots" content="noindex" />
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2306080b'/%3E%3Ctext x='50' y='68' font-size='52' font-family='monospace' font-weight='bold' text-anchor='middle' fill='%23a3ff6b'%3EJ·%3C/text%3E%3C/svg%3E" />
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Fraunces:ital,wght@1,400&display=swap" rel="stylesheet" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f3f1ec'/%3E%3Ccircle cx='50' cy='50' r='22' fill='%23d8452b'/%3E%3C/svg%3E" />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Geist+Mono&family=Newsreader:ital,opsz,wght@1,6..72,300&display=swap" rel="stylesheet" />
 <style>
-  :root { --ink: #06080b; --fg: #e8f0ee; --dim: #8fa3a0; --ph: #a3ff6b; --amber: #ffc857; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { height: 100%; }
   body {
-    background: var(--ink); color: var(--fg);
-    font-family: "JetBrains Mono", monospace;
-    display: grid; place-items: center; overflow: hidden; text-align: center;
+    min-height: 100svh; background: #f3f1ec; color: #141311;
+    font-family: "Geist", system-ui, sans-serif; -webkit-font-smoothing: antialiased;
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 20px clamp(20px, 4vw, 56px) 28px;
   }
-  canvas { position: fixed; inset: 0; width: 100%; height: 100%; opacity: 0.5; }
-  main { position: relative; padding: 0 16px; }
-  h1 {
-    font-size: clamp(96px, 26vw, 280px); line-height: 0.9; letter-spacing: -0.04em;
-    color: transparent; -webkit-text-stroke: 2px var(--ph);
-    text-shadow: 0 0 40px rgba(163, 255, 107, 0.25);
-    animation: jitter 3s steps(1) infinite;
-  }
-  @keyframes jitter { 0%, 92%, 100% { transform: none; } 94% { transform: translate(-5px, 2px) skewX(6deg); } 96% { transform: translate(4px, -2px); } }
-  p { color: var(--dim); font-size: 14px; margin-top: 20px; line-height: 1.8; }
-  em { font-family: "Fraunces", serif; color: var(--amber); font-size: 1.3em; }
-  a {
-    display: inline-block; margin-top: 32px; color: var(--ink); background: var(--ph);
-    padding: 13px 26px; border-radius: 100px; text-decoration: none; font-size: 13px; letter-spacing: 0.08em;
-    transition: transform 0.3s, box-shadow 0.3s;
-  }
-  a:hover { transform: translateY(-3px); box-shadow: 0 0 28px rgba(163, 255, 107, 0.4); }
-  @media (prefers-reduced-motion: reduce) { h1 { animation: none; } canvas { display: none; } }
+  header, footer { display: flex; justify-content: space-between; font-size: 14px; }
+  header a { font-weight: 500; }
+  a { color: inherit; text-decoration: none; }
+  .mono { font-family: "Geist Mono", monospace; font-size: 12px; color: #8f8a80; }
+  h1 { font-size: clamp(40px, 6vw, 92px); font-weight: 400; letter-spacing: -0.04em; line-height: 1.02; max-width: 12em; }
+  h1 em { font-family: "Newsreader", Georgia, serif; font-weight: 300; color: #d8452b; letter-spacing: -0.01em; }
+  footer a { background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0 1px; transition: background-size .5s cubic-bezier(.22,1,.36,1); }
+  footer a:hover { background-size: 100% 1px; }
 </style>
 </head>
 <body>
-<canvas id="c" aria-hidden="true"></canvas>
-<main>
-  <h1>404</h1>
-  <p>$ fetch <span id="path"></span><br/>error: token not in vocabulary.<br/><em>even the model hallucinated this page.</em></p>
-  <a href="/">↩ return to the latent space</a>
-</main>
-<script>
-  document.getElementById("path").textContent = location.pathname;
-  const c = document.getElementById("c"), x = c.getContext("2d");
-  const fit = () => { c.width = innerWidth; c.height = innerHeight; };
-  fit(); addEventListener("resize", fit);
-  const fs = 16; let drops = [];
-  (function f() {
-    const cols = Math.ceil(c.width / fs);
-    while (drops.length < cols) drops.push(Math.random() * -50);
-    x.fillStyle = "rgba(6,8,11,0.12)"; x.fillRect(0, 0, c.width, c.height);
-    x.font = fs + "px monospace"; x.fillStyle = "#a3ff6b";
-    drops.forEach((y, i) => {
-      x.fillText("01404Σλ"[(Math.random() * 7) | 0], i * fs, y * fs);
-      drops[i] = y * fs > c.height && Math.random() > 0.975 ? 0 : y + 1;
-    });
-    requestAnimationFrame(f);
-  })();
-</script>
+  <header><a href="/">Jaswant Singh</a><span class="mono">404</span></header>
+  <h1>This page isn’t here. <em>Perhaps it was never painted.</em></h1>
+  <footer><a href="/">← Back to the index</a><span class="mono" id="p"></span></footer>
+  <script>document.getElementById("p").textContent = location.pathname;</script>
 </body>
 </html>
