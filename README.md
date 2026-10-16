@@ -1,6 +1,6 @@
 # jaswant.art
 
-Personal site of Jaswant Singh: software engineer and painter.
+Personal site of Jaswant Singh: GenAI engineer who loves music, poetry and paint.
 
 Paper, ink and one red, set on a 12-column grid. Static HTML/CSS/JS with no build step.
 Open `index.html` in a browser, or serve the folder:
