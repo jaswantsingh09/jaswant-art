@@ -4,6 +4,14 @@
    ═══════════════════════════════════════════════════════════════ */
 
 :root {
+  --vermilion: #e2492f;
+  --indigo: #2b3a8c;
+  --saffron: #f2b233;
+  --teal: #0f7c78;
+  --plum: #7a2e5c;
+  --moss: #4f7a3a;
+  --sky: #3e8fd6;
+  --cream: #f6f1e6;
   --paper: #f3f1ec;
   --ink: #141311;
   --ink-2: #57534c;   /* secondary text */
@@ -616,10 +624,10 @@ img { display: block; max-width: 100%; }
    js/main.js measures each stroke and draws it on, pen-style, when it scrolls in. */
 .ill { display: block; width: clamp(140px, 13vw, 200px); height: auto; margin: 6px 0 18px -4px; overflow: visible; }
 .ill * {
-  fill: none; stroke: var(--ink); stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round;
+  fill: none; stroke: var(--ill-ink, var(--ink)); stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round;
   transition: stroke 0.9s var(--ease);
 }
-.ill .acc { stroke: var(--accent); }
+.ill .acc { stroke: var(--ill-acc, var(--accent)); }
 
 /* ═══════════════════════════════════════════════════════════════
    EXPRESSIVE PASS — fewer words, bigger type
@@ -689,3 +697,69 @@ img { display: block; max-width: 100%; }
 .life__t { margin: 4px 0 10px; }
 .life__meta { margin-top: 0; line-height: 1.7; font-size: 12.5px !important; }
 .life__item p.life__meta { max-width: none; }
+
+/* ═══════════════════════════════════════════════════════════════
+   COLOUR PASS — bold blocks, one line each
+   ═══════════════════════════════════════════════════════════════ */
+
+/* intro: a saffron sun behind the memoji */
+.intro__me { background: var(--saffron); border-radius: 50%; padding: 10px; }
+
+/* featured work as full-colour cards */
+.feature { border-bottom: none; display: grid; gap: clamp(14px, 2vw, 22px); }
+.feature li:first-child .feature__item, .feature__item { border-top: none; }
+.feature__item {
+  display: grid; grid-template-columns: 1.2fr 1fr; align-items: center; gap: var(--gap);
+  padding: clamp(26px, 4vw, 56px);
+  border-radius: clamp(18px, 2vw, 30px);
+  background: var(--card); color: var(--card-ink);
+  --ill-ink: var(--card-ink); --ill-acc: var(--card-acc);
+  transition: transform 0.6s var(--ease), box-shadow 0.6s var(--ease);
+}
+.feature__item:hover { transform: translateY(-6px); box-shadow: 0 30px 60px -30px rgba(20, 19, 17, 0.45); }
+.feature__item--aw { --card: var(--vermilion); --card-ink: var(--cream); --card-acc: var(--ink); }
+.feature__item--sa { --card: var(--indigo);    --card-ink: var(--cream); --card-acc: var(--saffron); }
+.feature__item--nx { --card: var(--saffron);   --card-ink: #141311;      --card-acc: var(--vermilion); }
+.feature__text { display: flex; flex-direction: column; }
+.feature__n { color: inherit; opacity: 0.7; padding: 0; margin-bottom: clamp(16px, 3vh, 28px); }
+.feature__t { font-size: clamp(48px, 7.4vw, 120px); line-height: 0.9; letter-spacing: -0.055em; color: inherit; }
+.feature:hover .feature__t, .feature .feature__item:hover .feature__t { color: inherit; transform: none; }
+.feature__line { color: inherit; opacity: 0.85; margin-top: 14px; }
+.feature__stat { text-align: left; justify-self: start; margin-top: clamp(26px, 5vh, 48px); }
+.feature__stat small { color: inherit; opacity: 0.7; }
+.feature__art { display: flex; justify-content: center; }
+.ill--big { width: min(100%, 420px) !important; margin: 0 !important; }
+.ill--big * { stroke-width: 1.5; }
+@media (max-width: 760px) {
+  .feature__item { grid-template-columns: 1fr; }
+  .feature__art { order: -1; justify-content: flex-start; }
+  .ill--big { width: min(100%, 300px) !important; }
+}
+
+/* practice: a solid indigo band */
+.band {
+  --ink: var(--cream); --ink-2: rgba(246, 241, 230, 0.82); --ink-3: rgba(246, 241, 230, 0.6); --rule: rgba(246, 241, 230, 0.25);
+  background: var(--indigo); color: var(--ink);
+  margin-top: clamp(96px, 16vh, 180px);
+  padding-top: clamp(56px, 9vh, 100px); padding-bottom: clamp(72px, 12vh, 140px);
+}
+.band .big-statement em { color: var(--saffron); }
+
+/* life: each interest is its own colour tile */
+.life { gap: clamp(12px, 1.6vw, 20px); }
+.life__item {
+  border-top: none; padding: clamp(22px, 2.6vw, 34px);
+  border-radius: clamp(16px, 1.8vw, 26px);
+  background: var(--tile); color: var(--tile-ink, var(--cream));
+  --ill-ink: var(--tile-ink, var(--cream)); --ill-acc: var(--tile-acc, var(--saffron));
+}
+.life__item .life__t { color: inherit; }
+.life__item:hover .life__t { color: inherit; }
+.life__item p.life__meta { color: inherit !important; opacity: 0.78; }
+.life__item:nth-child(1) { --tile: var(--saffron); --tile-ink: #141311; --tile-acc: var(--vermilion); }
+.life__item:nth-child(2) { --tile: var(--plum); }
+.life__item:nth-child(3) { --tile: var(--teal); }
+.life__item:nth-child(4) { --tile: var(--moss); }
+.life__item:nth-child(5) { --tile: var(--sky); --tile-acc: #141311; }
+.life__item:nth-child(6) { --tile: var(--vermilion); --tile-acc: #141311; }
+.life__item:nth-child(7) { --tile: var(--indigo); }
