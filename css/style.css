@@ -581,3 +581,33 @@ img { display: block; max-width: 100%; }
 .cs-credit { margin-left: calc((100% + var(--gap)) / 12); margin-top: 28px; color: var(--ink-3); }
 @media (max-width: 760px) { .cs-credit { margin-left: 0; } }
 .pipe__step code, .cs-prose code { font-family: var(--mono); font-size: 0.85em; background: rgba(20, 19, 17, 0.06); padding: 1px 5px; }
+
+/* screenshots on case pages */
+.cs-shot { margin: clamp(80px, 14vh, 150px) var(--pad) 0; }
+.cs-shot--inset { margin: clamp(48px, 8vh, 90px) 0 0; }
+.cs-shot img {
+  display: block; width: 100%; height: auto;
+  border: 1px solid var(--rule);
+  box-shadow: 0 30px 60px -30px rgba(20, 19, 17, 0.25);
+}
+.cs-shot figcaption { margin-top: 12px; color: var(--ink-3); max-width: 70ch; }
+
+/* ─────────────────────────── life (interests) ─────────────────────────── */
+.life {
+  display: grid; grid-template-columns: repeat(3, 1fr); column-gap: var(--gap); row-gap: clamp(40px, 6vh, 64px);
+  margin-bottom: clamp(96px, 15vh, 170px);
+}
+.life__item { border-top: 1px solid var(--rule); padding-top: 14px; }
+.life__item--wide { grid-column: span 3; }
+.life__n { color: var(--ink-3); }
+.life__t {
+  font-family: var(--serif); font-weight: 300; font-style: italic;
+  font-size: clamp(34px, 3.6vw, 56px); line-height: 1; letter-spacing: -0.02em;
+  margin: 10px 0 14px;
+  transition: color 0.35s;
+}
+.life__item:hover .life__t { color: var(--accent); }
+.life__item p { color: var(--ink-2); font-size: 15.5px; max-width: 38ch; }
+.life__meta { margin-top: 12px; color: var(--ink-3) !important; font-size: 12px !important; }
+@media (max-width: 900px) { .life { grid-template-columns: 1fr 1fr; } .life__item--wide { grid-column: 1 / -1; } }
+@media (max-width: 560px) { .life { grid-template-columns: 1fr; } }
