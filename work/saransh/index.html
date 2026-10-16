@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Saransh: a meeting assistant that stays on the machine — Jaswant Singh</title>
+<meta name="description" content="Case study: extending the open-source Meetily app into Saransh, Intelligaia's private meeting assistant, with org-only sign-in, calendar auto-recording, on-device voiceprints and Hinglish transcription." />
+<meta name="theme-color" content="#f3f1ec" />
+<link rel="canonical" href="https://jaswant.art/work/saransh/" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://jaswant.art/work/saransh/" />
+<meta property="og:title" content="Saransh: a meeting assistant that stays on the machine" />
+<meta property="og:description" content="Org-only sign-in, calendar auto-recording, on-device voiceprints and Hinglish transcription, built on top of Meetily." />
+<meta property="og:image" content="https://jaswant.art/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:creator" content="@CodeComposer009" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png" />
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&family=Geist+Mono:wght@400&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../css/style.css" />
+</head>
+<body class="case">
+
+<header class="top">
+  <a class="top__name" href="../../">Jaswant Singh</a>
+  <nav class="top__nav" aria-label="Primary">
+    <a href="../../#work">Work</a>
+    <a href="../../#experience" class="top__wide">Experience</a>
+    <a href="../../#writing">Research</a>
+    <a href="../../#studio">Studio</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <span class="top__time mono" id="clock" aria-label="Local time"></span>
+</header>
+
+<main>
+
+  <!-- ─────────── title ─────────── -->
+  <section class="cs-hero">
+    <p class="cs-hero__crumb mono"><a href="../../#work">← Selected work</a> / 06</p>
+    <h1 class="cs-hero__title" data-split>Saransh</h1>
+    <p class="cs-hero__lede" data-reveal>
+      A meeting assistant for a company that didn't want its meetings leaving the building.
+    </p>
+
+    <dl class="cs-meta" data-reveal>
+      <div><dt>Role</dt><dd>Extended an open-source app into an internal product</dd></div>
+      <div><dt>For</dt><dd>Intelligaia, as an internal tool</dd></div>
+      <div><dt>Stack</dt><dd>Tauri, Rust, Next.js, Whisper / Parakeet, sherpa-onnx</dd></div>
+      <div><dt>Code</dt><dd><a class="cs-a" href="https://github.com/jaswantsingh09/Saransh" target="_blank" rel="noopener">github.com/jaswantsingh09/Saransh ↗</a></dd></div>
+    </dl>
+  </section>
+
+  <!-- ─────────── numbers ─────────── -->
+  <section class="cs-stats" aria-label="At a glance">
+    <div class="cs-stat" data-reveal>
+      <p class="cs-stat__n"><span data-count="6">6</span></p>
+      <p class="cs-stat__l">features added on top of the open-source base, from sign-in to speaker names</p>
+    </div>
+    <div class="cs-stat" data-reveal>
+      <p class="cs-stat__n">Local</p>
+      <p class="cs-stat__l">by default: recording, live transcription and voiceprints. Audio leaves only when someone picks a hosted model</p>
+    </div>
+    <div class="cs-stat" data-reveal>
+      <p class="cs-stat__n">~<span data-count="34">34</span> MB</p>
+      <p class="cs-stat__l">of on-device models that tell speakers apart and recognise the user's voice</p>
+    </div>
+    <div class="cs-stat" data-reveal>
+      <p class="cs-stat__n">±<span data-count="2">2</span> s</p>
+      <p class="cs-stat__l">tolerance for lining up speaker turns with transcript lines</p>
+    </div>
+  </section>
+
+  <!-- ─────────── starting point ─────────── -->
+  <section class="cs-block">
+    <header class="block__head">
+      <span class="block__num mono">01</span>
+      <h2 class="block__title">Starting point</h2>
+    </header>
+    <div class="cs-prose" data-reveal>
+      <p class="cs-big">
+        Meeting assistants usually work by sending your audio to someone else's server.
+        Intelligaia wanted one where <em>nothing</em> leaves the laptop unless someone chooses a cloud model.
+      </p>
+      <p>
+        Instead of starting from zero, I built on <strong>Meetily</strong>, an open-source desktop app by Zackriya Solutions (MIT).
+        It already captured system and microphone audio, transcribed it locally with Whisper or Parakeet,
+        and summarised it with a local or self-hosted model. That was the right foundation. What it lacked was everything that turns
+        a capable open-source app into a tool a company can hand to its people.
+      </p>
+      <p>
+        Saransh is that layer: an org-only gate, a link to people's calendars, recording that starts itself,
+        knowing who spoke, and transcription that copes with Hindi and English in the same sentence.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─────────── what I added ─────────── -->
+  <section class="cs-block">
+    <header class="block__head">
+      <span class="block__num mono">02</span>
+      <h2 class="block__title">What I added</h2>
+    </header>
+    <ol class="pipe">
+      <li class="pipe__step" data-reveal>
+        <span class="pipe__n mono">1</span>
+        <h3>Org-only sign-in</h3>
+        <p>The whole app sits behind a Google login that only <code>@intelligaia.com</code> accounts pass, with a 30-day local session so people aren't asked every morning.</p>
+      </li>
+      <li class="pipe__step" data-reveal>
+        <span class="pipe__n mono">2</span>
+        <h3>Calendar and auto-record</h3>
+        <p>Upcoming video meetings appear from Google Calendar. Press Join and Saransh opens the call and records the Meet window with system and mic audio into one <code>meeting.mp4</code>, alongside the transcript. It stops when the meeting ends.</p>
+      </li>
+      <li class="pipe__step" data-reveal>
+        <span class="pipe__n mono">3</span>
+        <h3>Meet auto-detect</h3>
+        <p>When you join a Meet some other way, Saransh notices and offers to transcribe, then stops when the meeting window closes. It's a beta behind a feature flag.</p>
+      </li>
+      <li class="pipe__step" data-reveal>
+        <span class="pipe__n mono">4</span>
+        <h3>Voice ID</h3>
+        <p>Record a short sample once and Saransh keeps a voiceprint on the device. After each meeting it separates the speakers in the background and labels the owner's voice by name.</p>
+      </li>
+      <li class="pipe__step" data-reveal>
+        <span class="pipe__n mono">5</span>
+        <h3>Who said what</h3>
+        <p>Speaker turns are saved with the meeting and drawn into the transcript: a legend of speakers and coloured headers on every turn, so saved meetings keep their names.</p>
+      </li>
+      <li class="pipe__step" data-reveal>
+        <span class="pipe__n mono">6</span>
+        <h3>Hinglish transcription</h3>
+        <p>Imports and re-transcriptions can use Intelligaia's hosted speech model, a Whisper large-v3 fine-tune for Hindi–English code-switching. Live transcription stays on the local engines.</p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ─────────── decisions ─────────── -->
+  <section class="cs-block">
+    <header class="block__head">
+      <span class="block__num mono">03</span>
+      <h2 class="block__title">Decisions worth explaining</h2>
+    </header>
+    <div class="cs-split">
+      <p class="cs-big" data-reveal>
+        Most of the work was in the details nobody sees until they go wrong: a covered window, a wrong domain,
+        a model that <em>won't stop repeating itself</em>.
+      </p>
+      <ul class="cs-list" data-reveal>
+        <li><strong>Recording that survives a covered window.</strong> Ordinary screen capture records whatever is on top, so a chat window dragged over the call ends up in the video. Saransh uses Windows Graphics Capture, which follows the Meet window itself even when it's hidden, and falls back to the whole monitor if the window can't be found.</li>
+        <li><strong>The domain check happens after login, not before.</strong> Asking Google to restrict sign-in to one domain is only a hint. The real check runs after the code exchange, against the hosted-domain claim and the email Google returns. The login runs in the system browser over a PKCE loopback, so no secrets ever touch the app's webview.</li>
+        <li><strong>Prompt, don't record silently.</strong> Meet detection reads window titles, which can't reliably tell the waiting room from a live call. So the app asks before it starts, instead of quietly recording something it shouldn't.</li>
+        <li><strong>Voiceprints are biometric data.</strong> Enrollment needs explicit consent, and the voiceprint is stored only on that machine. The embedding model captures voice timbre rather than language, so the same voiceprint works whether someone is speaking Hindi, English or both.</li>
+        <li><strong>Two clocks that never agree.</strong> Whisper's sentence boundaries and the diarizer's speaker turns rarely line up. Each transcript line takes the speaker whose turn contains it, or the nearest turn within two seconds.</li>
+        <li><strong>Teaching a hosted model to stop looping.</strong> Whole-file uploads made the hosted Whisper model fall into repetition loops. Saransh sends only speech segments found by voice activity detection, then collapses any repeated words or phrases that remain.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ─────────── honest gaps ─────────── -->
+  <section class="cs-block">
+    <header class="block__head">
+      <span class="block__num mono">04</span>
+      <h2 class="block__title">Where it stands</h2>
+    </header>
+    <ul class="cs-gaps" data-reveal>
+      <li>Window capture, Meet detection and Voice ID are Windows-only for now.</li>
+      <li>Voice ID labels the device owner's voice; other speakers are separated but not yet named.</li>
+      <li>A redesign from new Figma screens has started as a static preview of the core flow.</li>
+    </ul>
+    <p class="cs-credit mono" data-reveal>Built on <a class="cs-a" href="https://github.com/Zackriya-Solutions/meeting-minutes" target="_blank" rel="noopener">Meetily</a> by Zackriya Solutions, MIT licensed.</p>
+  </section>
+
+  <!-- ─────────── next ─────────── -->
+  <nav class="cs-next" aria-label="More">
+    <a href="../auctionwire/" class="cs-next__link">
+      <span class="label">Next case study</span>
+      <span class="cs-next__title">AuctionWire →</span>
+    </a>
+  </nav>
+
+  <footer class="contact" id="contact">
+    <p class="label">Contact</p>
+    <div class="contact__mailrow">
+      <a class="contact__mail" href="mailto:jaswantsinghjsn@gmail.com" data-split>jaswantsinghjsn@gmail.com</a>
+      <button class="contact__copy mono" type="button" data-copy="jaswantsinghjsn@gmail.com" aria-live="polite">Copy</button>
+    </div>
+    <div class="contact__row">
+      <nav class="contact__links" aria-label="Elsewhere">
+        <a href="../../resume.pdf" target="_blank" rel="noopener">Résumé (PDF)</a>
+        <a href="https://github.com/jaswantsinghh" target="_blank" rel="me noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/jaswant-singh009" target="_blank" rel="me noopener">LinkedIn</a>
+        <a href="https://x.com/CodeComposer009" target="_blank" rel="me noopener">X</a>
+      </nav>
+      <p class="mono">© <span id="year"></span> Jaswant Singh</p>
+    </div>
+  </footer>
+</main>
+
+<script src="../../js/case.js"></script>
+</body>
+</html>
