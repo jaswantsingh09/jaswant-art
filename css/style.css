@@ -569,3 +569,9 @@ img { display: block; max-width: 100%; }
 .row--link { cursor: pointer; }
 .row__link::after { content: ""; position: absolute; inset: 0; }
 .row__cta { color: var(--accent); }
+.row__ext {
+  color: var(--ink-2);
+  background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0 1px;
+  transition: background-size 0.5s var(--ease), color 0.3s;
+}
+.row__ext:hover { color: var(--accent); background-size: 100% 1px; }
