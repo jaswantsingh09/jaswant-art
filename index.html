@@ -94,50 +94,41 @@
       <h2 class="block__title">Selected work</h2>
     </header>
 
-    <ol class="rows" id="workRows">
-      <li class="row row--link" data-seed="3" data-reveal>
-        <span class="row__idx mono">01</span>
-        <h3 class="row__title"><a class="row__link" href="work/auctionwire/">AuctionWire</a></h3>
-        <p class="row__desc">Graded trading-card auction platform. A FastAPI OCR service reads slab-certificate numbers across 71 listing sources; a QLoRA-tuned Qwen vision model lifted accuracy from 85% to 98%, replacing a paid OCR provider.</p>
-        <span class="row__tags mono">Next.js · FastAPI · VLM<br/><span class="row__cta">Case study →</span></span>
+    <!-- ✏️ EDIT HERE: featured projects (each opens its case study). data-seed picks the hover drawing. -->
+    <ol class="feature" id="workRows">
+      <li data-seed="3" data-reveal>
+        <a class="feature__item" href="work/auctionwire/">
+          <span class="feature__n mono">01</span>
+          <span class="feature__t">AuctionWire</span>
+          <span class="feature__line">Reads the certificate on every graded card.</span>
+          <span class="feature__stat"><b>85→98%</b><small class="mono">OCR accuracy</small></span>
+        </a>
       </li>
-      <li class="row row--link" data-seed="15" data-reveal>
-        <span class="row__idx mono">02</span>
-        <h3 class="row__title"><a class="row__link" href="work/saransh/">Saransh</a></h3>
-        <p class="row__desc">A privacy-first meeting assistant for Intelligaia, built on the open-source Meetily desktop app. I added an org-only Google sign-in, calendar-driven auto-recording of Meet calls, speaker identification from enrolled voiceprints, and Hinglish transcription through an in-house speech model. Recording and live transcription stay on the device.</p>
-        <span class="row__tags mono">Tauri · Rust · Whisper<br/><span class="row__cta">Case study →</span> · <a class="row__ext" href="https://github.com/jaswantsingh09/Saransh" target="_blank" rel="noopener">GitHub ↗</a></span>
+      <li data-seed="15" data-reveal>
+        <a class="feature__item" href="work/saransh/">
+          <span class="feature__n mono">02</span>
+          <span class="feature__t">Saransh</span>
+          <span class="feature__line">A meeting assistant that stays on the machine.</span>
+          <span class="feature__stat"><b>Local</b><small class="mono">by default</small></span>
+        </a>
       </li>
-      <li class="row row--link" data-seed="33" data-reveal>
-        <span class="row__idx mono">03</span>
-        <h3 class="row__title"><a class="row__link" href="work/nucleux/">Nucleux</a></h3>
-        <p class="row__desc">An agentic-UI component library for React: 48 accessible, Tailwind-based components for chat and agent interfaces (threads, tool calls, reasoning, streaming text), each published as its own npm package. It ships with an MCP server, so AI coding agents read the real props instead of guessing them.</p>
-        <span class="row__tags mono">React · TypeScript · MCP<br/><span class="row__cta">Case study →</span> · <a class="row__ext" href="https://github.com/intelligaia-open-labs/nucleux" target="_blank" rel="noopener">GitHub ↗</a> · <a class="row__ext" href="https://www.npmjs.com/package/@nucleux/react" target="_blank" rel="noopener">npm ↗</a></span>
-      </li>
-      <li class="row" data-seed="11" data-reveal>
-        <span class="row__idx mono">04</span>
-        <h3 class="row__title">Cisco Outshift — Internet of Cognition</h3>
-        <p class="row__desc">Proof of concept that turns a plain-language problem statement into a live multi-agent “cognitive fabric”: GPT-4o generates the agents, their staged reasoning and the graph that connects them.</p>
-        <span class="row__tags mono">Multi-agent · GPT-4o</span>
-      </li>
-      <li class="row" data-seed="27" data-reveal>
-        <span class="row__idx mono">05</span>
-        <h3 class="row__title">Bhutan Smart Driving Test</h3>
-        <p class="row__desc">Real-time computer vision for a government driving test. Scores the parking box from live cameras, timing each run and counting every tyre touch on the boundary.</p>
-        <span class="row__tags mono">YOLO11 · SAM · FastAPI</span>
-      </li>
-      <li class="row" data-seed="42" data-reveal>
-        <span class="row__idx mono">06</span>
-        <h3 class="row__title">PChat — PHI/PII privacy layer</h3>
-        <p class="row__desc">A compliance assistant that validates documents against regulatory parameters, saving the client three full-time roles (~US$100K a year), with PHI/PII exposure cut by over 90%.</p>
-        <span class="row__tags mono">OpenAI · Kafka · Redis</span>
-      </li>
-      <li class="row" data-seed="8" data-reveal>
-        <span class="row__idx mono">07</span>
-        <h3 class="row__title">ComplyWise</h3>
-        <p class="row__desc">Finds and remediates vulnerabilities across GitHub repos and AWS workflows. Manual compliance checks down 80%; a custom RAG store made retrieval 50% faster at a tenth of the cost.</p>
-        <span class="row__tags mono">RAG · AWS · Voice agent</span>
+      <li data-seed="33" data-reveal>
+        <a class="feature__item" href="work/nucleux/">
+          <span class="feature__n mono">03</span>
+          <span class="feature__t">Nucleux</span>
+          <span class="feature__line">UI building blocks for AI agents.</span>
+          <span class="feature__stat"><b>48</b><small class="mono">components</small></span>
+        </a>
       </li>
     </ol>
+
+    <!-- ✏️ EDIT HERE: more projects, one line each -->
+    <ul class="more" data-reveal>
+      <li><span>Cisco Outshift: Internet of Cognition</span><span class="mono">Multi-agent proof of concept</span></li>
+      <li><span>Bhutan Smart Driving Test</span><span class="mono">Real-time computer vision</span></li>
+      <li><span>PChat</span><span class="mono">PHI/PII privacy layer · ~$100K/yr saved</span></li>
+      <li><span>ComplyWise</span><span class="mono">Compliance automation · 80% less manual work</span></li>
+    </ul>
 
     <div class="peek" id="peek" aria-hidden="true"><canvas id="peekCanvas"></canvas></div>
   </section>
@@ -150,55 +141,14 @@
     </header>
 
     <ol class="cv">
-      <li class="cv__item" data-reveal>
-        <span class="cv__when mono">2025 — Now</span>
-        <div class="cv__what">
-          <h3>Senior Software Engineer, Full-Stack / AI</h3>
-          <p class="cv__org">Intelligaia Technologies</p>
-        </div>
-        <p class="cv__note">Production AI tools for enterprise clients including Cisco and Palo Alto Networks — end-to-end delivery with CI/CD, testing and observability. Workflow efficiency up 30%+.</p>
-      </li>
-      <li class="cv__item" data-reveal>
-        <span class="cv__when mono">2023 — 2025</span>
-        <div class="cv__what">
-          <h3>GenAI / Full-Stack Developer</h3>
-          <p class="cv__org">Superfine Cyber Security</p>
-        </div>
-        <p class="cv__note">Led GenAI and full-stack development of compliance and healthcare SaaS on GCP and AWS — PChat, ComplyWise, DentalBuddy.</p>
-      </li>
-      <li class="cv__item" data-reveal>
-        <span class="cv__when mono">2021 — 2023</span>
-        <div class="cv__what">
-          <h3>Full-Stack Developer</h3>
-          <p class="cv__org">Ryaz.io</p>
-        </div>
-        <p class="cv__note">Rebuilt a teaching platform: page loads from 3.2s to 1.1s, accessibility score 78 → 95. Shipped a streaming GenAI chatbot and moved the app to React Native.</p>
-      </li>
-      <li class="cv__item" data-reveal>
-        <span class="cv__when mono">2020 — 2021</span>
-        <div class="cv__what">
-          <h3>Web Developer</h3>
-          <p class="cv__org">Freelance</p>
-        </div>
-        <p class="cv__note">Marketing sites and a custom Shopify storefront for early clients, plus an audit-automation portal.</p>
-      </li>
-      <li class="cv__item" data-reveal>
-        <span class="cv__when mono">2019 — 2023</span>
-        <div class="cv__what">
-          <h3>B.Tech, Computer Science</h3>
-          <p class="cv__org">Guru Nanak Dev Engineering College, Ludhiana</p>
-        </div>
-        <p class="cv__note">CGPA 8.8 / 10.</p>
-      </li>
-      <li class="cv__item" data-reveal>
-        <span class="cv__when mono">— 2019</span>
-        <div class="cv__what">
-          <h3>Class XII (PCM) and Class X</h3>
-          <p class="cv__org">Mahavir Public School, Sundernagar, Himachal Pradesh</p>
-        </div>
-        <p class="cv__note">Class XII, Physics–Chemistry–Maths: 85.2%. Class X: CGPA 10 / 10.</p>
-      </li>
+      <li class="cv__item" data-reveal><span class="cv__when mono">2025 — now</span><h3>Senior Software Engineer</h3><p class="cv__org">Intelligaia</p></li>
+      <li class="cv__item" data-reveal><span class="cv__when mono">2023 — 25</span><h3>GenAI / Full-Stack Developer</h3><p class="cv__org">Superfine Cyber Security</p></li>
+      <li class="cv__item" data-reveal><span class="cv__when mono">2021 — 23</span><h3>Full-Stack Developer</h3><p class="cv__org">Ryaz.io</p></li>
+      <li class="cv__item" data-reveal><span class="cv__when mono">2020 — 21</span><h3>Web Developer</h3><p class="cv__org">Freelance</p></li>
     </ol>
+    <p class="edu mono" data-reveal>
+      B.Tech CSE, GNDEC Ludhiana · CGPA 8.8 &nbsp;/&nbsp; Class XII (PCM) 85.2% · Class X CGPA 10, Mahavir Public School, Sundernagar
+    </p>
   </section>
 
   <!-- ─────────────────────────── PRACTICE ─────────────────────────── -->
@@ -208,42 +158,12 @@
       <h2 class="block__title">Practice</h2>
     </header>
 
-    <div class="practice">
-      <p class="practice__statement" data-reveal>
-        Four years of putting language models into production — and owning everything around them,
-        from the pipeline and the evals to the interface someone actually uses. I like the boring parts:
-        retries, observability, cost ceilings. They decide whether the clever part survives.
-      </p>
-      <div class="practice__cols">
-        <div data-reveal>
-          <h3 class="label">GenAI</h3>
-          <ul>
-            <li>RAG, LangChain, LangGraph</li>
-            <li>Agents and tool use</li>
-            <li>Fine-tuning (QLoRA), vision models</li>
-            <li>Pinecone, ChromaDB, FAISS</li>
-          </ul>
-        </div>
-        <div data-reveal>
-          <h3 class="label">MLOps &amp; cloud</h3>
-          <ul>
-            <li>AWS Bedrock, SageMaker, Lambda</li>
-            <li>GCP Vertex AI, Azure OpenAI</li>
-            <li>Docker, Kubernetes, CI/CD</li>
-            <li>Observability and drift detection</li>
-          </ul>
-        </div>
-        <div data-reveal>
-          <h3 class="label">Product engineering</h3>
-          <ul>
-            <li>React, Next.js, React Native</li>
-            <li>Node, Express, FastAPI, Django</li>
-            <li>MongoDB, Kafka, Redis</li>
-            <li>TypeScript and Python</li>
-          </ul>
-        </div>
-      </div>
-    </div>
+    <p class="big-statement" data-reveal>
+      Four years of putting language models <em>into production</em>, and owning everything around them.
+    </p>
+    <p class="toolline mono" data-reveal>
+      RAG · Agents · LangGraph · QLoRA · Vision models · AWS Bedrock · Vertex AI · Azure OpenAI · Docker · Kubernetes · React · Next.js · Node · FastAPI · MongoDB · Kafka
+    </p>
   </section>
 
   <!-- ─────────────────────────── WRITING ─────────────────────────── -->
@@ -263,60 +183,44 @@
       <h2 class="block__title">Life</h2>
     </header>
 
-    <p class="studio__intro" data-reveal>
-      The other half. Ragas and kirtan, ghazals and shers,
-      mountain roads, and whatever I'm learning this month.
-    </p>
+    <p class="studio__intro" data-reveal>Off the clock.</p>
 
     <!-- ✏️ EDIT HERE: the things I love outside work -->
     <ol class="life">
       <li class="life__item" data-reveal>
         <svg class="ill" viewBox="0 0 160 100" role="img" aria-label="A harmonium, its bellows folded behind the keys"><path d="M30 50 h100 v32 h-100 z"/><path d="M38 50 l4 -6 l4 6 l4 -6 l4 6 l4 -6 l4 6 l4 -6 l4 6 l4 -6 l4 6 l4 -6 l4 6 l4 -6 l4 6 l4 -6 l4 6 l4 -6 l4 6 l4 -6 l4 6 l4 -6"/><path d="M34 44 h92 v-8 h-92 z"/><path d="M36 60 h88 v14 h-88 z M44 60 v14 M52 60 v14 M60 60 v14 M68 60 v14 M76 60 v14 M84 60 v14 M92 60 v14 M100 60 v14 M108 60 v14 M116 60 v14"/><circle cx="44" cy="40" r="1.6"/><circle cx="56" cy="40" r="1.6"/><circle cx="104" cy="40" r="1.6"/><circle cx="116" cy="40" r="1.6"/><path class="acc" d="M132 36 c3 -5 7 -5 10 0 s7 5 10 0 M136 24 c3 -5 7 -5 10 0"/></svg>
-        <span class="life__n mono">01</span>
         <h3 class="life__t">Music</h3>
-        <p>Hindustani classical and Gurmat Sangeet. I play the harmonium and the esraj, and the ukulele and guitar when it's lighter.</p>
-        <p class="life__meta mono">Harmonium · Esraj · Ukulele · Guitar</p>
+        <p class="life__meta mono">Hindustani classical · Gurmat Sangeet<br/>Harmonium · Esraj · Ukulele · Guitar</p>
       </li>
       <li class="life__item" data-reveal>
         <svg class="ill" viewBox="0 0 160 100" role="img" aria-label="A quill writing a single flowing line"><path d="M112 12 c-22 10 -40 34 -48 58 l-4 12 c10 -6 18 -14 26 -24 c12 -14 22 -30 26 -46 z"/><path d="M64 70 l20 -38"/><path class="acc" d="M58 86 c-8 -2 -14 2 -20 6 c-8 6 -20 4 -26 -2 m60 -4 c10 4 22 6 34 0 c8 -4 16 -2 22 4"/></svg>
-        <span class="life__n mono">02</span>
         <h3 class="life__t">Poetry</h3>
-        <p>I read and write poems, and keep returning to Urdu and Punjabi ghazals and shers.</p>
-        <p class="life__meta mono">Ghazal · Sher · Urdu · Punjabi</p>
+        <p class="life__meta mono">Reading and writing<br/>Urdu &amp; Punjabi ghazals, shers</p>
       </li>
       <li class="life__item" data-reveal>
         <svg class="ill" viewBox="0 0 160 100" role="img" aria-label="Mountain peaks with a switchback road climbing between them"><path d="M4 84 l30 -38 l14 14 l26 -40 l24 30 l12 -10 l42 44"/><path d="M65 34 l5 4 l5 -5 l5 5 l5 -4"/><path class="acc" d="M80 84 c-20 -2 -20 -9 0 -11 c20 -2 20 -9 2 -11 c-14 -2 -12 -7 2 -9"/><circle cx="132" cy="22" r="8"/></svg>
-        <span class="life__n mono">03</span>
         <h3 class="life__t">Mountains</h3>
-        <p>Travel, mostly uphill, and the roads are better on a bike.</p>
-        <p class="life__meta mono">Travel · Riding</p>
+        <p class="life__meta mono">Travel, mostly uphill<br/>Best on a bike</p>
       </li>
       <li class="life__item" data-reveal>
         <svg class="ill" viewBox="0 0 160 100" role="img" aria-label="A loaded barbell above a running track marked with distances"><path d="M28 50 h104"/><rect x="34" y="30" width="8" height="40" rx="2"/><rect x="44" y="36" width="6" height="28" rx="2"/><rect x="118" y="30" width="8" height="40" rx="2"/><rect x="110" y="36" width="6" height="28" rx="2"/><path class="acc" d="M20 88 h120"/><path d="M20 88 m8 0 v-4 m24 4 v-4 m24 4 v-4 m24 4 v-4 m24 4 v-4"/></svg>
-        <span class="life__n mono">04</span>
         <h3 class="life__t">Training</h3>
-        <p>Bodybuilding and running.</p>
-        <p class="life__meta mono">Strength · Distance</p>
+        <p class="life__meta mono">Bodybuilding<br/>Running</p>
       </li>
       <li class="life__item" data-reveal>
         <svg class="ill" viewBox="0 0 160 100" role="img" aria-label="A camera with its lens"><rect x="30" y="30" width="100" height="58" rx="8"/><path d="M56 30 l8 -12 h32 l8 12"/><circle cx="80" cy="59" r="20"/><circle class="acc" cx="80" cy="59" r="11"/><path d="M112 40 h8"/></svg>
-        <span class="life__n mono">05</span>
         <h3 class="life__t">Photography</h3>
-        <p>Looking a little longer than I need to, and keeping the frame.</p>
-        <p class="life__meta mono">Camera</p>
+        <p class="life__meta mono">Through the lens</p>
       </li>
       <li class="life__item" data-reveal>
         <svg class="ill" viewBox="0 0 160 100" role="img" aria-label="A chequered flag beside a football"><circle cx="38" cy="72" r="11"/><circle cx="122" cy="72" r="12"/><path d="M6 82 h28"/><path d="M12 80 c12 -8 30 -12 50 -12 l14 -6 l8 -8 h14 l6 8 l26 2 l8 -6"/><path d="M49 80 h61"/><path d="M86 58 c3 -7 11 -8 15 -1"/><path d="M130 44 h22 v8 h-22 z M140 52 v8"/><circle class="acc" cx="20" cy="30" r="8"/><path class="acc" d="M20 25 l4.5 3.3 l-1.7 5.2 h-5.6 l-1.7 -5.2 z"/></svg>
-        <span class="life__n mono">06</span>
         <h3 class="life__t">Race day</h3>
-        <p>A Formula 1 enthusiast, and always up for watching football.</p>
-        <p class="life__meta mono">F1 · Football</p>
+        <p class="life__meta mono">Formula 1<br/>Football</p>
       </li>
-      <li class="life__item life__item--wide" data-reveal>
+      <li class="life__item" data-reveal>
         <svg class="ill" viewBox="0 0 160 100" role="img" aria-label="An open book with a sprout growing from its page"><path d="M80 30 c-14 -8 -34 -10 -54 -6 v58 c20 -4 40 -2 54 6 c14 -8 34 -10 54 -6 v-58 c-20 -4 -40 -2 -54 6 z"/><path d="M80 30 v58"/><path d="M34 40 c12 -2 26 0 36 4 M34 52 c12 -2 26 0 36 4 M34 64 c12 -2 26 0 36 4"/><path class="acc" d="M108 70 c-1 -12 1 -24 6 -36"/><path class="acc" d="M109 56 c-10 0 -16 -6 -18 -14 c10 0 16 6 18 14 z"/><path class="acc" d="M112 42 c2 -8 10 -14 20 -14 c-2 8 -10 14 -20 14 z"/></svg>
-        <span class="life__n mono">07</span>
         <h3 class="life__t">Learning</h3>
-        <p>Always picking up something new. It's the same habit that keeps the engineering honest.</p>
+        <p class="life__meta mono">Always something new</p>
       </li>
     </ol>
 
@@ -361,7 +265,7 @@
       </article>
     </div>
 
-    <div class="notes">
+    <div class="notes" hidden>
       <h3 class="label">Notes</h3>
       <!-- ✏️ EDIT HERE: short observations -->
       <ul class="notes__list">
