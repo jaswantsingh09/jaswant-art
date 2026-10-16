@@ -1,6 +1,6 @@
 # jaswant.art
 
-Personal site of Jaswant Singh: GenAI engineer who loves music, poetry and paint.
+Personal site of Jaswant Singh: GenAI engineer. After hours: ragas, ghazals and mountain roads.
 
 Paper, ink and one red, set on a 12-column grid. Static HTML/CSS/JS with no build step.
 Open `index.html` in a browser, or serve the folder:
@@ -30,7 +30,8 @@ img/            memoji and favicons
 | Intro sentence and the "Currently / Focus / Also" row | `.intro` in `index.html` |
 | Projects | `#workRows`: one `<li class="row">` per project. `data-seed` picks the hover drawing |
 | Essays, research, journal | `js/content.js` (rendered automatically; essays and research open in a side reader) |
-| Paintings | `.plates`: replace each `<div class="plate__ph …">` with `<img src="art/file.jpg" alt="…" />` |
+| Life section | `.life` list in `index.html`, one `<li>` per interest |
+| Photos / artworks (hidden) | `.plates`: replace each `<div class="plate__ph …">` with `<img src="art/file.jpg" alt="…" />` |
 | Poems and notes | `.poems` and `.notes__list` in `index.html` |
 | Email and links | `.contact`. The **Copy** button copies whatever is in its `data-copy` attribute |
 | Résumé | replace `resume.pdf` in the repo root. It's linked from the header and the footer, so keep the phone number out of it |
