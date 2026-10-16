@@ -190,6 +190,46 @@
     });
   });
 
+  /* ───────────── line illustrations: draw each stroke like a pen ─────────────
+     Lengths are measured in the browser (no pathLength shortcuts, which some
+     engines ignore on circles and rects). Strokes draw one after another, the
+     red accent last. Without JS or with reduced motion, drawings stay complete. */
+  if (!reduceMotion) {
+    const pen = "cubic-bezier(0.65, 0, 0.35, 1)";
+    const plans = new Map();
+    $$(".ill").forEach((svg) => {
+      const shapes = [...svg.querySelectorAll("path, circle, rect, line, polyline, ellipse")]
+        .sort((a, b) => a.classList.contains("acc") - b.classList.contains("acc"));
+      let t = 0.1;
+      const plan = shapes.map((el) => {
+        let len = 0;
+        try { len = el.getTotalLength(); } catch (_) { /* unmeasurable: leave it drawn */ }
+        if (!len) return null;
+        const dur = Math.min(1.3, 0.3 + len / 300);
+        const step = { el, len, delay: t, dur };
+        t += dur * 0.6;
+        el.style.strokeDasharray = `${len} ${len}`;
+        el.style.strokeDashoffset = len;
+        el.style.opacity = 0; // hides round-cap dots until this stroke's turn
+        return step;
+      }).filter(Boolean);
+      plans.set(svg, plan);
+    });
+    const draw = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        draw.unobserve(e.target);
+        plans.get(e.target).forEach(({ el, delay, dur }) => {
+          el.style.transition =
+            `stroke-dashoffset ${dur}s ${pen} ${delay}s, opacity 0.01s linear ${delay}s, stroke 0.9s`;
+          el.style.strokeDashoffset = 0;
+          el.style.opacity = 1;
+        });
+      });
+    }, { threshold: 0.45 });
+    plans.forEach((_, svg) => draw.observe(svg));
+  }
+
   /* ───────────── studio: lights down ───────────── */
   const studio = $("#studio");
   function nightShift() {
