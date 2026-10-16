@@ -581,3 +581,13 @@ img { display: block; max-width: 100%; }
 .cs-credit { margin-left: calc((100% + var(--gap)) / 12); margin-top: 28px; color: var(--ink-3); }
 @media (max-width: 760px) { .cs-credit { margin-left: 0; } }
 .pipe__step code, .cs-prose code { font-family: var(--mono); font-size: 0.85em; background: rgba(20, 19, 17, 0.06); padding: 1px 5px; }
+
+/* screenshots on case pages */
+.cs-shot { margin: clamp(80px, 14vh, 150px) var(--pad) 0; }
+.cs-shot--inset { margin: clamp(48px, 8vh, 90px) 0 0; }
+.cs-shot img {
+  display: block; width: 100%; height: auto;
+  border: 1px solid var(--rule);
+  box-shadow: 0 30px 60px -30px rgba(20, 19, 17, 0.25);
+}
+.cs-shot figcaption { margin-top: 12px; color: var(--ink-3); max-width: 70ch; }
