@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nucleux: components for talking to agents — Jaswant Singh</title>
+<meta name="description" content="Case study: Nucleux, an open-source React library of 48 components for AI chat and agent interfaces, built from a Figma source of truth, published per component on npm, with an MCP server so coding agents use the real API." />
+<meta name="theme-color" content="#f3f1ec" />
+<link rel="canonical" href="https://jaswant.art/work/nucleux/" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://jaswant.art/work/nucleux/" />
+<meta property="og:title" content="Nucleux: components for talking to agents" />
+<meta property="og:description" content="48 React components for AI chat and agent interfaces, one npm package each, plus an MCP server so coding agents read the real props." />
+<meta property="og:image" content="https://jaswant.art/og.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:creator" content="@CodeComposer009" />
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png" />
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&family=Geist+Mono:wght@400&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../../css/style.css" />
+</head>
+<body class="case">
+
+<header class="top">
+  <a class="top__name" href="../../">Jaswant Singh</a>
+  <nav class="top__nav" aria-label="Primary">
+    <a href="../../#work">Work</a>
+    <a href="../../#experience" class="top__wide">Experience</a>
+    <a href="../../#writing">Research</a>
+    <a href="../../#studio">Studio</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <span class="top__time mono" id="clock" aria-label="Local time"></span>
+</header>
+
+<main>
+
+  <!-- ─────────── title ─────────── -->
+  <section class="cs-hero">
+    <p class="cs-hero__crumb mono"><a href="../../#work">← Selected work</a> / 07</p>
+    <h1 class="cs-hero__title" data-split>Nucleux</h1>
+    <p class="cs-hero__lede" data-reveal>
+      Building blocks for interfaces where the other side of the conversation is an AI agent.
+    </p>
+
+    <dl class="cs-meta" data-reveal>
+      <div><dt>Role</dt><dd>Built the library, its tooling and its MCP server</dd></div>
+      <div><dt>For</dt><dd>Intelligaia, open source under MIT</dd></div>
+      <div><dt>Stack</dt><dd>React 18, TypeScript, Tailwind, tsup, Storybook, Vitest + jest-axe</dd></div>
+      <div><dt>Code</dt><dd>
+        <a class="cs-a" href="https://github.com/intelligaia-open-labs/nucleux" target="_blank" rel="noopener">GitHub ↗</a> ·
+        <a class="cs-a" href="https://www.npmjs.com/package/@nucleux/react" target="_blank" rel="noopener">npm ↗</a>
+      </dd></div>
+    </dl>
+  </section>
+
+  <!-- ─────────── numbers ─────────── -->
+  <section class="cs-stats" aria-label="At a glance">
+    <div class="cs-stat" data-reveal>
+      <p class="cs-stat__n"><span data-count="48">48</span></p>
+      <p class="cs-stat__l">components, each its own npm package, plus an umbrella that has them all</p>
+    </div>
+    <div class="cs-stat" data-reveal>
+      <p class="cs-stat__n">×<span data-count="529">529</span></p>
+      <p class="cs-stat__l">Button instances in the Figma file. Usage counts like this set the build order</p>
+    </div>
+    <div class="cs-stat" data-reveal>
+      <p class="cs-stat__n"><span data-count="104">104</span></p>
+      <p class="cs-stat__l">render, accessibility and interaction tests when the library split into packages</p>
+    </div>
+    <div class="cs-stat" data-reveal>
+      <p class="cs-stat__n"><span data-count="6">6</span></p>
+      <p class="cs-stat__l">MCP tools that let coding agents search the library and read its real props</p>
+    </div>
+  </section>
+
+  <!-- ─────────── problem ─────────── -->
+  <section class="cs-block">
+    <header class="block__head">
+      <span class="block__num mono">01</span>
+      <h2 class="block__title">The problem</h2>
+    </header>
+    <div class="cs-prose" data-reveal>
+      <p class="cs-big">
+        General UI kits give you buttons and dialogs. Agent interfaces need things they don't ship:
+        a thread, text that <em>streams in</em>, a visible tool call, a reasoning trace, a consent step.
+      </p>
+      <p>
+        Intelligaia's designers had already worked these patterns out in a large Figma file of AI interaction patterns.
+        What was missing was the code: components that match the design exactly, that a team can install one at a time,
+        and that hold up when they're assembled by an AI coding assistant rather than by hand.
+      </p>
+      <p>
+        That last part shaped more of the project than anything else. If agents are going to build with the library,
+        they need to see its real API, not guess it from training data.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─────────── pipeline ─────────── -->
+  <section class="cs-block">
+    <header class="block__head">
+      <span class="block__num mono">02</span>
+      <h2 class="block__title">From Figma to npm</h2>
+    </header>
+    <p class="cs-intro" data-reveal>Every component goes through the same six steps.</p>
+    <ol class="pipe">
+      <li class="pipe__step" data-reveal>
+        <span class="pipe__n mono">1</span>
+        <h3>Read the design</h3>
+        <p>Pull the frame's structure and variables straight from Figma, and map each design variable to a <code>--nx-*</code> token. Hex values never appear in components.</p>
+      </li>
+      <li class="pipe__step" data-reveal>
+        <span class="pipe__n mono">2</span>
+        <h3>Resolve to the master</h3>
+        <p>Match every instance to its master component and recover its full set of variants, rather than copying how one screen happens to look.</p>
+      </li>
+      <li class="pipe__step" data-reveal>
+        <span class="pipe__n mono">3</span>
+        <h3>Primitives, then screens</h3>
+        <p>Split each screen into reusable primitives and compose the screen back from them. Six full example compositions, such as an agent chat and a meeting dashboard, ship with the library.</p>
+      </li>
+      <li class="pipe__step" data-reveal>
+        <span class="pipe__n mono">4</span>
+        <h3>One package each</h3>
+        <p>Each component lives in its own <code>@nucleux/&lt;name&gt;</code> package with its props type and a story. The <code>@nucleux/react</code> umbrella re-exports all of them.</p>
+      </li>
+      <li class="pipe__step" data-reveal>
+        <span class="pipe__n mono">5</span>
+        <h3>Prove it</h3>
+        <p>One command runs typecheck, then render, accessibility and interaction tests, then the package build, then the Storybook build. A component isn't done until all four pass.</p>
+      </li>
+      <li class="pipe__step" data-reveal>
+        <span class="pipe__n mono">6</span>
+        <h3>Publish, then describe</h3>
+        <p>Packages publish to npm. A catalog generated from the packages themselves goes into the MCP server, so the docs agents read can't drift from the code.</p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- ─────────── decisions ─────────── -->
+  <section class="cs-block">
+    <header class="block__head">
+      <span class="block__num mono">03</span>
+      <h2 class="block__title">Decisions worth explaining</h2>
+    </header>
+    <div class="cs-split">
+      <p class="cs-big" data-reveal>
+        A component library is mostly decisions about <em>what not to trust</em>: a screenshot's pixels,
+        a bundler's defaults, an agent's memory.
+      </p>
+      <ul class="cs-list" data-reveal>
+        <li><strong>The master component wins over the screen.</strong> The first Button was built from one screen's pixels and came out subtly wrong. It was rebuilt against the canonical component (colour, border, radius, weight, letter-spacing). That rule went into the harness: never trust screenshot pixels over the component definition.</li>
+        <li><strong>Build what's used most, first.</strong> Instance counts across the whole Figma file set the order: Button ×529, Card Container ×179, Icon Button ×174, Badge ×74. The pieces that appear on every screen got built and tested before the rare ones.</li>
+        <li><strong>Install everything, or one thing.</strong> Teams can add the whole kit or a single component. Inside the repo, every package resolves to source, so tests and Storybook run without building anything first.</li>
+        <li><strong>Safe for Server Components.</strong> React packages need a <code>"use client"</code> line, but the bundler strips it during the build. So a post-build step adds it back, only to packages that depend on React. Tokens and utilities stay importable from server code.</li>
+        <li><strong>Themes are variables, not forks.</strong> Every colour reads from an <code>--nx-*</code> CSS variable through a Tailwind preset. Changing one variable rebrands everything, and dark mode is a single class.</li>
+        <li><strong>Docs that agents can't misread.</strong> The MCP server answers from a catalog generated at build time: descriptions, exports, verbatim props, install lines and full examples. Adding it to Claude Code, Cursor or Windsurf takes one line.</li>
+        <li><strong>AI-assisted, with guardrails.</strong> The library was built with an AI pair. The Figma-to-component process and the validation gate are written down as reusable skills, so every new component follows the same steps and passes the same checks.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ─────────── inventory ─────────── -->
+  <section class="cs-block">
+    <header class="block__head">
+      <span class="block__num mono">04</span>
+      <h2 class="block__title">What's in the box</h2>
+    </header>
+    <div class="cs-cols">
+      <div data-reveal>
+        <h3 class="label">Agent and chat</h3>
+        <p>Thread, Message, InputBar, AgentComposer, StreamingText, TypingIndicator, ToolCall, Reasoning, CodeBlock, Suggestions, FollowUp</p>
+      </div>
+      <div data-reveal>
+        <h3 class="label">Consent and forms</h3>
+        <p>ModularConsent, RichCheckboxGroup, Checkbox, RadioGroup, Switch, Select, SearchInput</p>
+      </div>
+      <div data-reveal>
+        <h3 class="label">Structure and patterns</h3>
+        <p>GlobalNav, Sidebar, NavPanel, Tabs, Menu, Breadcrumb, Dialog, Sheet, Popover, Toast, Table, MediaCard, ActionTile, Checklist, PageHeader, and the basics: Button, Badge, Chip, Avatar, Alert, Tooltip, Progress, Accordion</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── honest gaps ─────────── -->
+  <section class="cs-block">
+    <header class="block__head">
+      <span class="block__num mono">05</span>
+      <h2 class="block__title">Where it stands</h2>
+    </header>
+    <ul class="cs-gaps" data-reveal>
+      <li>It's still pre-1.0 (the packages are at 0.4). APIs can still change between minor versions.</li>
+      <li>The companion pattern-library website, which documents when and why to use each pattern, is a separate Intelligaia project built mostly by colleagues.</li>
+    </ul>
+  </section>
+
+  <!-- ─────────── next ─────────── -->
+  <nav class="cs-next" aria-label="More">
+    <a href="../auctionwire/" class="cs-next__link">
+      <span class="label">Next case study</span>
+      <span class="cs-next__title">AuctionWire →</span>
+    </a>
+  </nav>
+
+  <footer class="contact" id="contact">
+    <p class="label">Contact</p>
+    <div class="contact__mailrow">
+      <a class="contact__mail" href="mailto:jaswantsinghjsn@gmail.com" data-split>jaswantsinghjsn@gmail.com</a>
+      <button class="contact__copy mono" type="button" data-copy="jaswantsinghjsn@gmail.com" aria-live="polite">Copy</button>
+    </div>
+    <div class="contact__row">
+      <nav class="contact__links" aria-label="Elsewhere">
+        <a href="../../resume.pdf" target="_blank" rel="noopener">Résumé (PDF)</a>
+        <a href="https://github.com/jaswantsinghh" target="_blank" rel="me noopener">GitHub</a>
+        <a href="https://www.linkedin.com/in/jaswant-singh009" target="_blank" rel="me noopener">LinkedIn</a>
+        <a href="https://x.com/CodeComposer009" target="_blank" rel="me noopener">X</a>
+      </nav>
+      <p class="mono">© <span id="year"></span> Jaswant Singh</p>
+    </div>
+  </footer>
+</main>
+
+<script src="../../js/case.js"></script>
+</body>
+</html>
