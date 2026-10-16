@@ -398,7 +398,7 @@
 
   if (finePointer && !reduceMotion) {
     pctx = fitCanvas(peekCanvas, PW, PH);
-    const rows = $$(".row");
+    const rows = $$("#workRows [data-seed]");
     rows.forEach((row) => {
       row.addEventListener("pointerenter", () => {
         drawStudy(parseInt(row.dataset.seed, 10) || 1);
